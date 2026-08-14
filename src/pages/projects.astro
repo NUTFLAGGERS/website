@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Row from '../components/Row.astro';
+import { getCollection } from 'astro:content';
+
+const projects = await getCollection('projects');
+projects.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+---
+
+<BaseLayout title="Projects — NUTFLAGGERS" description="Open source tools, frameworks, and scripts built by NUTFLAGGERS.">
+  <section id="projects">
+    <div class="section-title">── projects & tooling</div>
+    {projects.map((proj) => (
+      <Row
+        date={proj.data.date}
+        title={proj.data.title}
+        url={proj.data.githubUrl || proj.data.url || '#'}
+        meta={`${proj.data.description} · ${proj.data.githubUrl ? 'github' : ''}`}
+        tags={[proj.data.tag]}
+        searchKeywords={`${proj.data.title} ${proj.data.description} ${proj.data.tag}`}
+      />
+    ))}
+  </section>
+</BaseLayout>

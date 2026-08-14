@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Row from '../../components/Row.astro';
+import { getCollection } from 'astro:content';
+
+const writeups = await getCollection('writeups');
+writeups.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+---
+
+<BaseLayout title="CTF Writeups — NUTFLAGGERS" description="Detailed cybersecurity CTF writeups, challenge solutions, and exploit walkthroughs.">
+  <section id="writeups">
+    <div class="section-title">── ctf writeups</div>
+    {writeups.map((w) => {
+      const metaParts = [];
+      if (w.data.place) metaParts.push(w.data.place);
+      if (w.data.score) metaParts.push(w.data.score);
+      const metaText = metaParts.join(' · ');
+
+      return (
+        <Row
+          date={w.data.pubDate}
+          title={w.data.title}
+          url={`${base}writeups/${w.slug}/`}
+          meta={metaText}
+          tags={w.data.tags}
+          challenges={w.data.challenges}
+          searchKeywords={`${w.data.title} ${w.data.tags.join(' ')} ${w.data.challenges.map(c => c.name).join(' ')}`}
+        />
+      );
+    })}
+  </section>
+</BaseLayout>

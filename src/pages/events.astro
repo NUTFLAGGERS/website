@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Row from '../components/Row.astro';
+import { getCollection } from 'astro:content';
+
+const events = await getCollection('events');
+// Sort by date descending if dates are comparable, or preserve order
+---
+
+<BaseLayout title="Events — NUTFLAGGERS" description="Upcoming and past CTF competitions and events for NUTFLAGGERS.">
+  <section id="events">
+    <div class="section-title">── ctf events</div>
+    {events.map((event) => (
+      <Row
+        date={event.data.date}
+        title={event.data.title}
+        url={event.data.url || '#'}
+        meta={`${event.data.location} · ${event.data.description}`}
+        featured={event.data.featured}
+        searchKeywords={`${event.data.title} ${event.data.location} ${event.data.description}`}
+      />
+    ))}
+  </section>
+</BaseLayout>

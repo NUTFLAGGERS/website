@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const teamMembers = await getCollection('team');
+---
+
+<BaseLayout title="About Us — NUTFLAGGERS" description="About NUTFLAGGERS student CTF team, member roster, and contact info.">
+  <section id="about">
+    <div class="section-title">── about us</div>
+    <p class="about-text">
+      We are NUTFLAGGERS — a student CTF team. We compete, write things up, build tools, and try to learn something every time. If you're interested in security, come find us.
+    </p>
+
+    <div class="section-title" style="margin-top: 32px;">── the team</div>
+    <div class="team-list">
+      {teamMembers.map((member) => (
+        <div class="team-row">
+          <span class="handle">{member.data.handle}</span> · {member.data.role}
+        </div>
+      ))}
+    </div>
+
+    <div class="section-title" style="margin-top: 36px;">── find us</div>
+    <div class="socials">
+      <a href="https://discord.gg" target="_blank" rel="noopener noreferrer">discord</a>
+      <a href="https://github.com/NUTFLAGGERS" target="_blank" rel="noopener noreferrer">github</a>
+      <a href="https://ctftime.org" target="_blank" rel="noopener noreferrer">ctftime</a>
+      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">twitter</a>
+      <a href="mailto:contact@nutflaggers.org">email</a>
+    </div>
+  </section>
+</BaseLayout>
