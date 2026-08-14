@@ -1,0 +1,76 @@
+---
+import TagBadge from './TagBadge.astro';
+
+export interface Challenge {
+  name: string;
+  category: string;
+  points: string;
+}
+
+export interface Props {
+  date: string;
+  title: string;
+  url?: string;
+  meta?: string;
+  featured?: boolean;
+  tags?: string[];
+  challenges?: Challenge[];
+  searchKeywords?: string;
+}
+
+const {
+  date,
+  title,
+  url = '#',
+  meta,
+  featured = false,
+  tags = [],
+  challenges = [],
+  searchKeywords = '',
+} = Astro.props;
+
+const fullSearchText = `${title} ${meta || ''} ${tags.join(' ')} ${searchKeywords}`.toLowerCase();
+---
+
+<div class="row searchable" data-search={fullSearchText}>
+  <span class="row-date">{date}</span>
+  <div class="row-body">
+    {featured && <span class="event-featured">★</span>}
+    <a href={url} class="title">{title}</a>
+    {meta && <span class="meta">&nbsp;{meta}</span>}
+    
+    {tags.length > 0 && (
+      <div class="tags">
+        {tags.map((tag) => (
+          <TagBadge tag={tag} />
+        ))}
+      </div>
+    )}
+
+    {challenges.length > 0 && (
+      <>
+        <button class="expand-btn" type="button" onclick="toggleChallenges(this)">▸ challenges</button>
+        <div class="challenges">
+          {challenges.map((c) => (
+            <div class="challenge-row">
+              <span class="c-name">{c.name}</span>
+              <TagBadge tag={c.category} />
+              <span class="c-pts">{c.points}</span>
+            </div>
+          ))}
+        </div>
+      </>
+    )}
+  </div>
+</div>
+
+<script is:inline>
+  if (typeof window.toggleChallenges !== 'function') {
+    window.toggleChallenges = function(btn) {
+      const panel = btn.nextElementSibling;
+      if (!panel) return;
+      const isOpen = panel.classList.toggle('open');
+      btn.textContent = isOpen ? '▾ challenges' : '▸ challenges';
+    };
+  }
+</script>

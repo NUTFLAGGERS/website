@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagBadge from '../../components/TagBadge.astro';
+
+export async function getStaticPaths() {
+  const writeups = await getCollection('writeups');
+  return writeups.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={`${entry.data.title} — NUTFLAGGERS Writeups`} description={`Writeup for ${entry.data.title}`}>
+  <article>
+    <div style="margin-bottom: 24px;">
+      <a href={import.meta.env.BASE_URL} style="font-size: 13px;">← back to main</a>
+      <h1 style="font-size: 20px; font-weight: 500; margin-top: 12px; margin-bottom: 4px;">{entry.data.title}</h1>
+      <div style="color: var(--dim); font-size: 13px;">
+        <span>Published {entry.data.pubDate}</span>
+        {entry.data.place && <span> · {entry.data.place}</span>}
+        {entry.data.score && <span> · {entry.data.score}</span>}
+      </div>
+      <div class="tags" style="margin-top: 8px;">
+        {entry.data.tags.map((tag) => (
+          <TagBadge tag={tag} />
+        ))}
+      </div>
+    </div>
+
+    <div class="writeup-content">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .writeup-content {
+    line-height: 1.8;
+  }
+  .writeup-content :global(h2) {
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 28px;
+    margin-bottom: 12px;
+    color: var(--fg);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+  }
+  .writeup-content :global(p) {
+    margin-bottom: 16px;
+    color: #b0b0b0;
+  }
+</style>

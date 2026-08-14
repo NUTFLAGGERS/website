@@ -1,0 +1,115 @@
+---
+---
+
+<div id="search-wrap">
+  <span class="prompt-prefix">~/nutflaggers $</span>
+  <input 
+    id="searchInput" 
+    type="search" 
+    placeholder="search… (press '/' to focus)" 
+    autocomplete="off" 
+    aria-label="Search site writeups, events, and projects" 
+    spellcheck="false" 
+  />
+  <span id="search-status" class="search-status"></span>
+</div>
+
+<style>
+  #search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--border-focus);
+    padding-bottom: 8px;
+  }
+  .prompt-prefix {
+    color: var(--dim);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  #searchInput {
+    background: transparent;
+    border: none;
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    width: 100%;
+  }
+  #searchInput::placeholder {
+    color: var(--dim);
+  }
+  .search-status {
+    color: var(--dim);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+</style>
+
+<script>
+  function setupSearch() {
+    const input = document.getElementById('searchInput') as HTMLInputElement | null;
+    const status = document.getElementById('search-status');
+    if (!input) return;
+
+    function filterItems() {
+      if (!input) return;
+      const q = input.value.trim().toLowerCase();
+      const searchableElements = document.querySelectorAll('.searchable');
+      let visibleCount = 0;
+
+      searchableElements.forEach((el) => {
+        const htmlEl = el as HTMLElement;
+        const haystack = ((htmlEl.dataset.search || '') + ' ' + htmlEl.innerText).toLowerCase();
+        const matches = q.length === 0 || haystack.includes(q);
+        htmlEl.classList.toggle('hidden', !matches);
+        if (matches) visibleCount++;
+      });
+
+      if (status) {
+        if (q.length > 0) {
+          status.textContent = `[${visibleCount} match${visibleCount === 1 ? '' : 'es'}]`;
+        } else {
+          status.textContent = '';
+        }
+      }
+    }
+
+    input.addEventListener('input', filterItems);
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        input.value = '';
+        filterItems();
+        input.blur();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement !== input) {
+        // Prevent default slash behavior if not typing in an input
+        const target = e.target as HTMLElement;
+        if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          input.focus();
+        }
+      }
+    });
+
+    // Tag click listener to populate search bar
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target && target.classList.contains('tag')) {
+        const tagText = target.innerText.trim();
+        input.value = tagText;
+        filterItems();
+        input.focus();
+      }
+    });
+  }
+
+  // Run on initial load and page navigations
+  setupSearch();
+  document.addEventListener('astro:page-load', setupSearch);
+</script>

@@ -1,0 +1,21 @@
+# Build & generated outputs
+dist/
+.astro/
+
+# Dependencies
+node_modules/
+
+# Environment variables & local secrets
+.env
+.env.production
+.env.local
+
+# OS & Editor clutter
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Agent scratch workspace
+.agents/

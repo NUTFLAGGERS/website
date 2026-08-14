@@ -1,0 +1,26 @@
+---
+title: "CTF Name 2026"
+pubDate: "2026-08-14"
+place: "1st place"
+score: "4200 pts"
+tags: ["web", "pwn", "crypto", "rev", "forensics"]
+challenges:
+  - name: "Challenge Name — Topic"
+    category: "web"
+    points: "200 pts"
+---
+
+# CTF Name 2026 Writeup
+
+Summary of team performance and overall CTF thoughts.
+
+## Challenge 1 (Category - 200 pts)
+
+Exploit details and step-by-step solution.
+
+```python
+# Solve script
+import requests
+
+print("Flag: nutflaggers{...}")
+```

@@ -1,0 +1,12 @@
+# Global codeowners for website repo
+*       @NUTFLAGGERS/infra-team
+
+# Core site architecture & configuration
+/astro.config.mjs    @NUTFLAGGERS/infra-team
+/package.json        @NUTFLAGGERS/infra-team
+/src/components/     @NUTFLAGGERS/infra-team
+/src/layouts/        @NUTFLAGGERS/infra-team
+/src/styles/         @NUTFLAGGERS/infra-team
+
+# CTF Writeups directory
+/src/content/writeups/ @NUTFLAGGERS/infra-team

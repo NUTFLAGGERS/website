@@ -1,0 +1,10 @@
+---
+export interface Props {
+  tag: string;
+}
+
+const { tag } = Astro.props;
+const normalizedTag = tag.toLowerCase().trim();
+---
+
+<span class={`tag ${normalizedTag}`}>{normalizedTag}</span>

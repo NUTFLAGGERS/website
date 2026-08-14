@@ -1,0 +1,296 @@
+:root {
+  --bg: #111111;
+  --fg: #d4d4d4;
+  --dim: #666666;
+  --link: #7ec8a0;
+  --tag: #555555;
+  --border: #1e1e1e;
+  --border-focus: #333333;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: var(--bg);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.75;
+  padding: 48px 24px 80px;
+  max-width: 680px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+  transition: color 0.15s ease, text-decoration 0.15s ease;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Header & Typography */
+.site-name {
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.site-tagline {
+  color: var(--dim);
+  margin-bottom: 32px;
+}
+
+/* Navigation */
+nav {
+  margin-bottom: 48px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+nav a {
+  color: var(--dim);
+  font-size: 13px;
+}
+
+nav a:hover,
+nav a.active {
+  color: var(--fg);
+  text-decoration: none;
+}
+
+/* Section styling */
+section {
+  margin-bottom: 52px;
+}
+
+.section-title {
+  color: var(--dim);
+  margin-bottom: 16px;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+}
+
+/* Row elements */
+.row {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.15s ease;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row-date {
+  color: var(--dim);
+  white-space: nowrap;
+  min-width: 90px;
+  font-size: 13px;
+}
+
+.row-body {
+  flex: 1;
+}
+
+.row-body .title {
+  color: var(--fg);
+  font-weight: 500;
+}
+
+.row-body .meta {
+  color: var(--dim);
+  font-size: 12px;
+}
+
+/* CTF Tags */
+.tags {
+  display: inline-flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.tag {
+  font-size: 11px;
+  color: var(--dim);
+  border: 1px solid #333;
+  border-radius: 2px;
+  padding: 0 5px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.tag:hover {
+  opacity: 0.85;
+}
+
+.tag.web { color: #7ec8e3; border-color: #7ec8e330; }
+.tag.pwn { color: #e38888; border-color: #e3888830; }
+.tag.rev { color: #e3bb88; border-color: #e3bb8830; }
+.tag.crypto { color: #b088e3; border-color: #b088e330; }
+.tag.forensics { color: #e388c6; border-color: #e388c630; }
+.tag.misc { color: #7ec8a0; border-color: #7ec8a030; }
+.tag.osint { color: #88c6e3; border-color: #88c6e330; }
+.tag.bot { color: #7ec8a0; border-color: #7ec8a030; }
+
+/* Highlight event */
+.event-featured {
+  color: #b088e3;
+  margin-right: 4px;
+}
+
+/* Challenge collapsible list */
+.challenges {
+  display: none;
+  padding: 8px 0 4px 0;
+}
+
+.challenges.open {
+  display: block;
+}
+
+.challenge-row {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  color: var(--dim);
+  font-size: 12px;
+  padding: 3px 0;
+}
+
+.challenge-row .c-name {
+  flex: 1;
+  color: #999999;
+}
+
+.challenge-row .c-pts {
+  color: var(--link);
+}
+
+.expand-btn {
+  background: none;
+  border: none;
+  color: var(--dim);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 4px;
+}
+
+.expand-btn:hover {
+  color: var(--fg);
+}
+
+/* Social links & team */
+.socials {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.socials a {
+  color: var(--dim);
+  font-size: 13px;
+}
+
+.socials a:hover {
+  color: var(--link);
+  text-decoration: none;
+}
+
+.team-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.team-row {
+  color: var(--dim);
+  font-size: 13px;
+}
+
+.team-row .handle {
+  color: var(--fg);
+  font-weight: 500;
+}
+
+/* Footer */
+footer {
+  color: var(--dim);
+  font-size: 12px;
+  margin-top: 60px;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+}
+
+/* Search filtering utility */
+.searchable.hidden {
+  display: none !important;
+}
+
+/* Cursor blinking animation */
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: var(--fg);
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Code block markdown styling */
+pre {
+  background-color: #161b22 !important;
+  padding: 14px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+  font-size: 13px;
+  margin: 16px 0;
+}
+
+code {
+  font-family: 'Fira Code', monospace;
+}
+
+/* Mobile Media Query */
+@media (max-width: 480px) {
+  body {
+    font-size: 13px;
+    padding: 28px 16px 60px;
+  }
+  .row {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .row-date {
+    min-width: unset;
+  }
+}
