@@ -18,7 +18,7 @@ challenges:
 
 # SekaiCTF 2025 Writeup
 
-0xFlag achieved **3rd place** with 4200 points.
+NUTFLAGGERS achieved **3rd place** with 4200 points.
 
 ## BabyWeb (Web - 200 pts)
 Insecure deserialization vulnerability in PHP application payload logic.

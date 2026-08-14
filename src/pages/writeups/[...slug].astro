@@ -13,14 +13,16 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 ---
 
 <BaseLayout title={`${entry.data.title} — NUTFLAGGERS Writeups`} description={`Writeup for ${entry.data.title}`}>
   <article>
-    <div style="margin-bottom: 24px;">
-      <a href={import.meta.env.BASE_URL} style="font-size: 13px;">← back to main</a>
-      <h1 style="font-size: 20px; font-weight: 500; margin-top: 12px; margin-bottom: 4px;">{entry.data.title}</h1>
-      <div style="color: var(--dim); font-size: 13px;">
+    <div class="writeup-header">
+      <a href={`${base}writeups/`} class="back-link">← back to writeups</a>
+      <h1>{entry.data.title}</h1>
+      <div class="writeup-meta">
         <span>Published {entry.data.pubDate}</span>
         {entry.data.place && <span> · {entry.data.place}</span>}
         {entry.data.score && <span> · {entry.data.score}</span>}
@@ -39,20 +41,116 @@ const { Content } = await entry.render();
 </BaseLayout>
 
 <style>
+  .writeup-header {
+    margin-bottom: 32px;
+  }
+  .back-link {
+    font-size: 13px;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .writeup-meta {
+    color: var(--dim);
+    font-size: 13px;
+  }
+
+  /* Full prose styling for rendered markdown */
   .writeup-content {
     line-height: 1.8;
   }
   .writeup-content :global(h2) {
     font-size: 16px;
     font-weight: 500;
-    margin-top: 28px;
+    margin-top: 32px;
     margin-bottom: 12px;
     color: var(--fg);
     border-bottom: 1px solid var(--border);
     padding-bottom: 4px;
   }
+  .writeup-content :global(h3) {
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    color: var(--fg);
+  }
+  .writeup-content :global(h4) {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 20px;
+    margin-bottom: 6px;
+    color: #b0b0b0;
+  }
   .writeup-content :global(p) {
     margin-bottom: 16px;
     color: #b0b0b0;
+  }
+  .writeup-content :global(ul),
+  .writeup-content :global(ol) {
+    margin-bottom: 16px;
+    padding-left: 24px;
+    color: #b0b0b0;
+  }
+  .writeup-content :global(li) {
+    margin-bottom: 4px;
+  }
+  .writeup-content :global(li::marker) {
+    color: var(--dim);
+  }
+  .writeup-content :global(code:not(pre code)) {
+    background: #ffffff0d;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 0.9em;
+    color: #c8c8c8;
+  }
+  .writeup-content :global(blockquote) {
+    border-left: 2px solid var(--link);
+    padding-left: 16px;
+    margin: 16px 0;
+    color: #999999;
+    font-style: italic;
+  }
+  .writeup-content :global(img) {
+    max-width: 100%;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    margin: 16px 0;
+  }
+  .writeup-content :global(hr) {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 28px 0;
+  }
+  .writeup-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  .writeup-content :global(th),
+  .writeup-content :global(td) {
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    text-align: left;
+    color: #b0b0b0;
+  }
+  .writeup-content :global(th) {
+    color: var(--fg);
+    font-weight: 500;
+    background: #ffffff06;
+  }
+  .writeup-content :global(a) {
+    color: var(--link);
+  }
+  .writeup-content :global(strong) {
+    color: var(--fg);
+    font-weight: 500;
   }
 </style>
