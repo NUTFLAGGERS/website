@@ -1,0 +1,10 @@
+{
+  "handle": "meyling (mae)",
+  "role": "infra",
+  "categories": ["exco", "infra team"],
+  "skills": ["osint", "web", "misc"],
+  "socials": {
+    "website": "https://maejikal.github.io/cyberportfolio/ctf-writeups/",
+    "github": ""
+  }
+}

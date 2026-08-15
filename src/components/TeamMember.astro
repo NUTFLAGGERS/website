@@ -1,0 +1,150 @@
+---
+import TagBadge from './TagBadge.astro';
+
+export interface Props {
+  handle: string;
+  role: string;
+  skills?: string[];
+  socials?: Record<string, string>;
+}
+
+const { handle, role, skills = [], socials = {} } = Astro.props;
+
+const socialEntries = Object.entries(socials).map(([platform, val]) => ({
+  platform,
+  url: val ?? '',
+}));
+---
+
+<div class="team-row">
+  <span class="handle-wrapper">
+    <span class="handle" tabindex={skills.length > 0 ? "0" : undefined}>{handle}</span>
+    {skills.length > 0 && (
+      <div class="skills-popup" role="tooltip">
+        <span class="popup-title">skills:</span>
+        <div class="popup-tags">
+          {skills.map((skill) => (
+            <TagBadge tag={skill} />
+          ))}
+        </div>
+      </div>
+    )}
+  </span>
+  <span class="role-sep">·</span>
+  <span class="role">{role}</span>
+  {socialEntries.length > 0 && (
+    <span class="member-socials">
+      [
+      {socialEntries.map((item, index) => {
+        const isExternal = item.url.startsWith('http://') || item.url.startsWith('https://');
+        return (
+          <>
+            <a 
+              href={item.url || '#'} 
+              target={isExternal ? '_blank' : undefined} 
+              rel={isExternal ? 'noopener noreferrer' : undefined}
+              onclick={!isExternal ? 'event.preventDefault()' : undefined}
+            >
+              {item.platform}
+            </a>
+            {index < socialEntries.length - 1 ? ' · ' : ''}
+          </>
+        );
+      })}
+      ]
+    </span>
+  )}
+</div>
+
+<style>
+  .team-row {
+    color: var(--dim);
+    font-size: 13px;
+    padding: 3px 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .handle-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+  .team-row .handle {
+    color: var(--fg);
+    font-weight: 500;
+    cursor: default;
+    transition: color 0.15s ease;
+  }
+  .handle-wrapper:hover .handle,
+  .handle:focus-visible {
+    color: var(--link);
+  }
+  .role-sep {
+    color: var(--dim);
+  }
+  .role {
+    color: var(--dim);
+  }
+  .skills-popup {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 0;
+    background: #161616;
+    border: 1px solid var(--border-focus);
+    border-radius: 4px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+    z-index: 50;
+  }
+  .skills-popup::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 16px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--border-focus) transparent transparent transparent;
+  }
+  .popup-title {
+    font-size: 11px;
+    color: var(--dim);
+    text-transform: lowercase;
+  }
+  .popup-tags {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .handle-wrapper:hover .skills-popup,
+  .handle-wrapper:focus-within .skills-popup {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .member-socials {
+    font-size: 12px;
+    color: var(--dim);
+  }
+  .member-socials a {
+    color: var(--link);
+    text-decoration: none;
+  }
+  .member-socials a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+
