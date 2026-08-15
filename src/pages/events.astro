@@ -4,21 +4,42 @@ import Row from '../components/Row.astro';
 import { getCollection } from 'astro:content';
 
 const events = await getCollection('events');
-// Sort by date descending if dates are comparable, or preserve order
+events.sort((a, b) => {
+  const dateA = a.data.startDate ? new Date(a.data.startDate).getTime() : (a.data.date ? new Date(a.data.date).getTime() : 0);
+  const dateB = b.data.startDate ? new Date(b.data.startDate).getTime() : (b.data.date ? new Date(b.data.date).getTime() : 0);
+  return dateB - dateA;
+});
 ---
 
 <BaseLayout title="Events — NUTFLAGGERS" description="Upcoming and past CTF competitions and events for NUTFLAGGERS.">
   <section id="events">
-    <div class="section-title">── ctf events</div>
-    {events.map((event) => (
-      <Row
-        date={event.data.date}
-        title={event.data.title}
-        url={event.data.url || '#'}
-        meta={`${event.data.location} · ${event.data.description}`}
-        featured={event.data.featured}
-        searchKeywords={`${event.data.title} ${event.data.location} ${event.data.description}`}
-      />
-    ))}
+    <div class="section-title">── events</div>
+    {events.map((event) => {
+      const metaParts: string[] = [];
+      if (event.data.location) metaParts.push(event.data.location);
+      if (event.data.description) metaParts.push(event.data.description);
+      const metaText = metaParts.join(' · ');
+
+      const searchTerms = [
+        event.data.title,
+        event.data.location || '',
+        event.data.description || '',
+        (event.data.tags || []).join(' '),
+        (event.data.challenges || []).map((c) => c.name).join(' '),
+      ].join(' ');
+
+      return (
+        <Row
+          date={event.data.date}
+          title={event.data.title}
+          url={event.data.url || '#'}
+          meta={metaText}
+          featured={event.data.featured}
+          tags={event.data.tags}
+          challenges={event.data.challenges}
+          searchKeywords={searchTerms}
+        />
+      );
+    })}
   </section>
 </BaseLayout>

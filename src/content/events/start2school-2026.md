@@ -1,6 +1,7 @@
 ---
 title: "Start2School Booth"
 date: "Aug 20–21"
+startDate: "2026-08-20"
 location: "Main Campus Atrium"
 description: "Come say hi, grab stickers, try demo challenges"
 featured: true

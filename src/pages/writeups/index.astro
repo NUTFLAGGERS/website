@@ -14,28 +14,17 @@ const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
     <div class="section-title">── ctf writeups</div>
     {writeups.map((w) => {
       const metaParts: string[] = [];
-      if (w.data.type === 'individual' || w.data.event || w.data.author) {
-        if (w.data.event) {
-          metaParts.push(w.data.event);
-        } else if (w.data.type === 'individual') {
-          metaParts.push('indiv writeup');
-        }
-        if (w.data.author) metaParts.push(`by ${w.data.author}`);
-        if (w.data.place) metaParts.push(w.data.place);
-        if (w.data.score) metaParts.push(w.data.score);
-      } else {
-        if (w.data.place) metaParts.push(w.data.place);
-        if (w.data.score) metaParts.push(w.data.score);
-      }
+      if (w.data.event) metaParts.push(w.data.event);
+      if (w.data.author) metaParts.push(`by ${w.data.author}`);
+      if (w.data.score) metaParts.push(w.data.score);
       const metaText = metaParts.join(' · ');
 
       const searchTerms = [
         w.data.title,
-        w.data.type || '',
         w.data.event || '',
         w.data.author || '',
-        w.data.tags.join(' '),
-        w.data.challenges.map((c) => c.name).join(' '),
+        (w.data.tags || []).join(' '),
+        w.data.description || '',
       ].join(' ');
 
       return (
@@ -45,7 +34,6 @@ const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
           url={`${base}writeups/${w.slug}/`}
           meta={metaText}
           tags={w.data.tags}
-          challenges={w.data.challenges}
           searchKeywords={searchTerms}
         />
       );

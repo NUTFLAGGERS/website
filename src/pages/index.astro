@@ -10,9 +10,39 @@ const projects = await getCollection('projects');
 const baseUrl = import.meta.env.BASE_URL;
 const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 
-// Sort writeups & projects by date descending
+const todayRef = '2026-08-01';
+
+// 1. Upcoming events: future dates, sorted chronologically ascending (soonest first)
+const upcomingEvents = events
+  .filter((e) => {
+    const d = e.data.startDate || e.data.date;
+    return d && d >= todayRef;
+  })
+  .sort((a, b) => {
+    const dateA = a.data.startDate ? new Date(a.data.startDate).getTime() : 0;
+    const dateB = b.data.startDate ? new Date(b.data.startDate).getTime() : 0;
+    return dateA - dateB;
+  });
+
+// 2. Featured events: featured tag === true, sorted descending
+const featuredEvents = events
+  .filter((e) => e.data.featured)
+  .sort((a, b) => {
+    const dateA = a.data.startDate ? new Date(a.data.startDate).getTime() : (a.data.date ? new Date(a.data.date).getTime() : 0);
+    const dateB = b.data.startDate ? new Date(b.data.startDate).getTime() : (b.data.date ? new Date(b.data.date).getTime() : 0);
+    return dateB - dateA;
+  });
+
+// Sort writeups by date descending
 writeups.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
-projects.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+// Sort projects: featured first, then by date descending
+projects.sort((a, b) => {
+  if (a.data.featured !== b.data.featured) {
+    return a.data.featured ? -1 : 1;
+  }
+  return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+});
 
 const recentWriteups = writeups.slice(0, 3);
 const featuredProjects = projects.slice(0, 2);
@@ -20,21 +50,73 @@ const featuredProjects = projects.slice(0, 2);
 
 <BaseLayout title="NUTFLAGGERS — CTF Team" description="NUTFLAGGERS CTF Team — writeups, projects, and events.">
   <!-- Upcoming Events -->
-  <section id="events">
+  <section id="upcoming-events">
     <div class="section-title-row">
       <div class="section-title">── upcoming events</div>
       <a href={`${base}events/`} class="section-more">all events →</a>
     </div>
-    {events.map((event) => (
-      <Row
-        date={event.data.date}
-        title={event.data.title}
-        url={event.data.url || '#'}
-        meta={`${event.data.location} · ${event.data.description}`}
-        featured={event.data.featured}
-        searchKeywords={`${event.data.title} ${event.data.location} ${event.data.description}`}
-      />
-    ))}
+    {upcomingEvents.map((event) => {
+      const metaParts: string[] = [];
+      if (event.data.location) metaParts.push(event.data.location);
+      if (event.data.description) metaParts.push(event.data.description);
+      const metaText = metaParts.join(' · ');
+
+      const searchTerms = [
+        event.data.title,
+        event.data.location || '',
+        event.data.description || '',
+        (event.data.tags || []).join(' '),
+        (event.data.challenges || []).map((c) => c.name).join(' '),
+      ].join(' ');
+
+      return (
+        <Row
+          date={event.data.date}
+          title={event.data.title}
+          url={event.data.url || '#'}
+          meta={metaText}
+          featured={event.data.featured}
+          tags={event.data.tags}
+          challenges={event.data.challenges}
+          searchKeywords={searchTerms}
+        />
+      );
+    })}
+  </section>
+
+  <!-- Featured Events -->
+  <section id="featured-events">
+    <div class="section-title-row">
+      <div class="section-title">── featured events</div>
+      <a href={`${base}events/`} class="section-more">all events →</a>
+    </div>
+    {featuredEvents.map((event) => {
+      const metaParts: string[] = [];
+      if (event.data.location) metaParts.push(event.data.location);
+      if (event.data.description) metaParts.push(event.data.description);
+      const metaText = metaParts.join(' · ');
+
+      const searchTerms = [
+        event.data.title,
+        event.data.location || '',
+        event.data.description || '',
+        (event.data.tags || []).join(' '),
+        (event.data.challenges || []).map((c) => c.name).join(' '),
+      ].join(' ');
+
+      return (
+        <Row
+          date={event.data.date}
+          title={event.data.title}
+          url={event.data.url || '#'}
+          meta={metaText}
+          featured={event.data.featured}
+          tags={event.data.tags}
+          challenges={event.data.challenges}
+          searchKeywords={searchTerms}
+        />
+      );
+    })}
   </section>
 
   <!-- Recent Writeups -->
@@ -45,28 +127,17 @@ const featuredProjects = projects.slice(0, 2);
     </div>
     {recentWriteups.map((w) => {
       const metaParts: string[] = [];
-      if (w.data.type === 'individual' || w.data.event || w.data.author) {
-        if (w.data.event) {
-          metaParts.push(w.data.event);
-        } else if (w.data.type === 'individual') {
-          metaParts.push('indiv writeup');
-        }
-        if (w.data.author) metaParts.push(`by ${w.data.author}`);
-        if (w.data.place) metaParts.push(w.data.place);
-        if (w.data.score) metaParts.push(w.data.score);
-      } else {
-        if (w.data.place) metaParts.push(w.data.place);
-        if (w.data.score) metaParts.push(w.data.score);
-      }
+      if (w.data.event) metaParts.push(w.data.event);
+      if (w.data.author) metaParts.push(`by ${w.data.author}`);
+      if (w.data.score) metaParts.push(w.data.score);
       const metaText = metaParts.join(' · ');
 
       const searchTerms = [
         w.data.title,
-        w.data.type || '',
         w.data.event || '',
         w.data.author || '',
-        w.data.tags.join(' '),
-        w.data.challenges.map((c) => c.name).join(' '),
+        (w.data.tags || []).join(' '),
+        w.data.description || '',
       ].join(' ');
 
       return (
@@ -76,7 +147,6 @@ const featuredProjects = projects.slice(0, 2);
           url={`${base}writeups/${w.slug}/`}
           meta={metaText}
           tags={w.data.tags}
-          challenges={w.data.challenges}
           searchKeywords={searchTerms}
         />
       );

@@ -5,6 +5,7 @@ export interface Challenge {
   name: string;
   category: string;
   points: string;
+  writeupSlug?: string;
 }
 
 export interface Props {
@@ -28,6 +29,9 @@ const {
   challenges = [],
   searchKeywords = '',
 } = Astro.props;
+
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 
 const fullSearchText = `${title} ${meta || ''} ${tags.join(' ')} ${searchKeywords}`.toLowerCase();
 ---
@@ -53,7 +57,11 @@ const fullSearchText = `${title} ${meta || ''} ${tags.join(' ')} ${searchKeyword
         <div class="challenges">
           {challenges.map((c) => (
             <div class="challenge-row">
-              <span class="c-name">{c.name}</span>
+              {c.writeupSlug ? (
+                <a href={`${base}writeups/${c.writeupSlug}/`} class="c-name c-link">{c.name}</a>
+              ) : (
+                <span class="c-name">{c.name}</span>
+              )}
               <TagBadge tag={c.category} />
               <span class="c-pts">{c.points}</span>
             </div>

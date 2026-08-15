@@ -218,6 +218,19 @@ section + section {
   color: #999999;
 }
 
+.challenge-row .c-link {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: var(--dim);
+  text-underline-offset: 3px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.challenge-row .c-link:hover {
+  color: var(--link);
+  text-decoration-color: var(--link);
+}
+
 .challenge-row .c-pts {
   color: var(--link);
 }
