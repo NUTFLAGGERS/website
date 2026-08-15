@@ -12,6 +12,8 @@ const {
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const imagePath = image.startsWith('/') ? `${import.meta.env.BASE_URL}${image.slice(1)}` : image;
+const imageURL = new URL(imagePath, Astro.site);
 ---
 
 <meta charset="UTF-8" />
@@ -27,14 +29,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, Astro.url)} />
+<meta property="og:image" content={imageURL} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={canonicalURL} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, Astro.url)} />
+<meta property="twitter:image" content={imageURL} />
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />

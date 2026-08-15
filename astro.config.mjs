@@ -4,7 +4,7 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   output: 'static',
   site: 'https://nutflaggers.github.io',
-  base: '/',
+  base: '/website/',
   markdown: {
     shikiConfig: {
       theme: 'github-dark-dimmed',
