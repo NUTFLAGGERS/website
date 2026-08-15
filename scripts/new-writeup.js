@@ -17,43 +17,72 @@ function ask(question, defaultValue = '') {
 }
 
 async function main() {
-  console.log('\n--- 🚩 NUTFLAGGERS Writeup Creator ---\n');
+  console.log('\n--- 🚩 NUTFLAGGERS Post / Writeup Creator ---\n');
 
   const today = new Date().toISOString().split('T')[0];
-  const title = await ask('CTF Event Title', 'SekaiCTF 2026');
+  const title = await ask('Post / Writeup Title', 'Example Challenge Walkthrough');
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   const pubDate = await ask('Publication Date (YYYY-MM-DD)', today);
-  const place = await ask('Placement / Rank (optional)', 'top 10');
-  const score = await ask('Total Score / Points (optional)', '3500 pts');
-  const tagsInput = await ask('Categories / Tags (comma separated)', 'web, pwn, crypto');
+  const event = await ask('CTF Event Name (optional)', 'SekaiCTF 2026');
+  const author = await ask('Author Handle (optional)', 'w4ve');
+  const place = await ask('Placement / Rank (optional)', '1st place');
+  const score = await ask('Challenge Points / Total Score (optional)', '500 pts');
+  const tagsInput = await ask('Categories / Tags (comma separated)', 'web, pwn');
   const tags = tagsInput.split(',').map(t => t.trim()).filter(Boolean);
+  const description = await ask('Summary / Short Description', 'Comprehensive walkthrough and technical analysis.');
 
-  const content = `---
-title: "${title}"
-pubDate: "${pubDate}"
-place: "${place}"
-score: "${score}"
-tags: [${tags.map(t => `"${t}"`).join(', ')}]
-challenges:
-  - name: "Example Challenge 1"
-    category: "${tags[0] || 'web'}"
-    points: "200 pts"
----
+  const frontmatterLines = [
+    '---',
+    `title: "${title}"`,
+    `pubDate: "${pubDate}"`,
+  ];
 
-# ${title} Writeup
+  if (event) frontmatterLines.push(`event: "${event}"`);
+  if (author) frontmatterLines.push(`author: "${author}"`);
+  if (score) frontmatterLines.push(`score: "${score}"`);
+  if (place) frontmatterLines.push(`place: "${place}"`);
+  if (description) frontmatterLines.push(`description: "${description}"`);
+  frontmatterLines.push(`tags: [${tags.map(t => `"${t}"`).join(', ')}]`);
+  frontmatterLines.push('---');
 
-Writeup overview and highlights for ${title}.
+  const content = `${frontmatterLines.join('\n')}
 
-## Challenge 1 Name (${tags[0] || 'web'})
+# ${title}
 
-Detailed explanation of your solve script and solution.
+${description}
+
+## Executive Summary
+
+Brief overview of the target, difficulty, and high-level exploit chain.
+
+## Vulnerability Analysis
+
+Detailed technical walk-through of the target application or binary.
+
+### Root Cause
+Explanation of the underlying bug (e.g. memory corruption, injection, logic flaw).
+
+## Exploitation & Solution
+
+Step-by-step walkthrough detailing how the primitive was constructed and executed.
 
 \`\`\`python
-# Solve script
+# Solve script payload
 import requests
 
-print("Flag captured!")
+def main():
+    print("[+] Executing solve script...")
+    # Add exploit logic here
+
+if __name__ == "__main__":
+    main()
 \`\`\`
+
+## Flag & Conclusion
+
+**Flag**: \`nutflaggers{example_flag_here}\`
+
+Key takeaways or mitigations learned from this challenge.
 `;
 
   const targetDir = path.join(process.cwd(), 'src', 'content', 'writeups');
@@ -64,7 +93,7 @@ print("Flag captured!")
   const targetPath = path.join(targetDir, `${slug}.md`);
   fs.writeFileSync(targetPath, content, 'utf8');
 
-  console.log(`\n✅ Writeup template created successfully!`);
+  console.log(`\n✅ Post / Writeup template created successfully!`);
   console.log(`📁 File location: src/content/writeups/${slug}.md\n`);
   rl.close();
 }

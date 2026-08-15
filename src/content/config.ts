@@ -64,9 +64,22 @@ const team = defineCollection({
   }),
 });
 
+const resources = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    category: z.string(),
+    description: z.string(),
+    url: z.string(),
+    tags: z.array(z.string()).default([]),
+    featured: z.boolean().default(false),
+  }),
+});
+
 export const collections = {
   events,
   writeups,
   projects,
   team,
+  resources,
 };

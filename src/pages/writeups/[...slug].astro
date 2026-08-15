@@ -17,7 +17,10 @@ const baseUrl = import.meta.env.BASE_URL;
 const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 ---
 
-<BaseLayout title={`${entry.data.title} — NUTFLAGGERS Writeups`} description={`Writeup for ${entry.data.title}`}>
+<BaseLayout 
+  title={`${entry.data.title} — NUTFLAGGERS Writeups`} 
+  description={entry.data.description || `Writeup for ${entry.data.title}`}
+>
   <article>
     <div class="writeup-header">
       <a href={`${base}writeups/`} class="back-link">← back to writeups</a>
@@ -32,11 +35,13 @@ const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
         {entry.data.place && <span> · {entry.data.place}</span>}
         {entry.data.score && <span> · {entry.data.score}</span>}
       </div>
-      <div class="tags" style="margin-top: 8px;">
-        {entry.data.tags.map((tag) => (
-          <TagBadge tag={tag} />
-        ))}
-      </div>
+      {entry.data.tags && entry.data.tags.length > 0 && (
+        <div class="tags" style="margin-top: 8px;">
+          {entry.data.tags.map((tag) => (
+            <TagBadge tag={tag} />
+          ))}
+        </div>
+      )}
     </div>
 
     <div class="writeup-content">

@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Row from '../components/Row.astro';
+import { getCollection } from 'astro:content';
+
+const resources = await getCollection('resources');
+
+// Sort resources: featured first, then alphabetically by category, then by title
+resources.sort((a, b) => {
+  if (a.data.featured !== b.data.featured) {
+    return a.data.featured ? -1 : 1;
+  }
+  if (a.data.category !== b.data.category) {
+    return a.data.category.localeCompare(b.data.category);
+  }
+  return a.data.title.localeCompare(b.data.title);
+});
+---
+
+<BaseLayout title="Resources — NUTFLAGGERS" description="Curated CTF learning platforms, exploit development tools, reverse engineering environments, and security reference guides.">
+  <section id="resources">
+    <div class="section-title">── curated ctf resources & tools</div>
+    {resources.map((res) => (
+      <Row
+        date={res.data.category}
+        title={res.data.title}
+        url={res.data.url}
+        meta={res.data.description}
+        tags={res.data.tags}
+        searchKeywords={`${res.data.title} ${res.data.category} ${res.data.description} ${res.data.tags.join(' ')}`}
+      />
+    ))}
+  </section>
+</BaseLayout>
