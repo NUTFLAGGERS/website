@@ -7,6 +7,3 @@
 /src/components/     @NUTFLAGGERS/infra-team
 /src/layouts/        @NUTFLAGGERS/infra-team
 /src/styles/         @NUTFLAGGERS/infra-team
-
-# CTF Writeups directory
-/src/content/writeups/ @NUTFLAGGERS/infra-team
