@@ -3,6 +3,7 @@
   --fg: #d4d4d4;
   --dim: #666666;
   --link: #7ec8a0;
+  --section-header: #e3bb88;
   --tag: #555555;
   --border: #1e1e1e;
   --border-focus: #333333;
@@ -109,10 +110,11 @@ section + section {
 }
 
 .section-title {
-  color: var(--dim);
+  color: var(--section-header);
   margin-bottom: 16px;
   font-size: 13px;
   letter-spacing: 0.05em;
+  font-weight: 500;
 }
 
 /* Row elements */
