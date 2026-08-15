@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+---
+
+<BaseLayout title="404 — Page Not Found" description="Page not found on NUTFLAGGERS site.">
+  <section style="padding: 4rem 0; text-align: center;">
+    <div style="font-size: 3rem; color: #ff5555; font-weight: bold; margin-bottom: 1rem;">404</div>
+    <div class="section-title" style="margin-bottom: 2rem;">── error: path_not_found ──</div>
+    <p style="color: #888; margin-bottom: 2rem;">The requested page could not be located on this server.</p>
+    <a href={base} style="color: #50fa7b; text-decoration: underline;">← return to terminal home</a>
+  </section>
+</BaseLayout>
