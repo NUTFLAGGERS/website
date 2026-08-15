@@ -5,7 +5,6 @@ updatedDate: "2026-08-15"
 event: "Example CTF 2026"
 author: "w4ve"
 score: "500 pts"
-place: "1st place"
 description: "An example CTF writeup post demonstrating technical analysis, solution steps, and code snippets."
 tags: ["web", "pwn"]
 ---

@@ -32,7 +32,6 @@ const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
         )}
         {entry.data.event && <span> · Event: {entry.data.event}</span>}
         {entry.data.author && <span> · Author: {entry.data.author}</span>}
-        {entry.data.place && <span> · {entry.data.place}</span>}
         {entry.data.score && <span> · {entry.data.score}</span>}
       </div>
       {entry.data.tags && entry.data.tags.length > 0 && (

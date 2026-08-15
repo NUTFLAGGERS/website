@@ -25,7 +25,6 @@ async function main() {
   const pubDate = await ask('Publication Date (YYYY-MM-DD)', today);
   const event = await ask('CTF Event Name (optional)', 'SekaiCTF 2026');
   const author = await ask('Author Handle (optional)', 'w4ve');
-  const place = await ask('Placement / Rank (optional)', '1st place');
   const score = await ask('Challenge Points / Total Score (optional)', '500 pts');
   const tagsInput = await ask('Categories / Tags (comma separated)', 'web, pwn');
   const tags = tagsInput.split(',').map(t => t.trim()).filter(Boolean);
@@ -40,7 +39,6 @@ async function main() {
   if (event) frontmatterLines.push(`event: "${event}"`);
   if (author) frontmatterLines.push(`author: "${author}"`);
   if (score) frontmatterLines.push(`score: "${score}"`);
-  if (place) frontmatterLines.push(`place: "${place}"`);
   if (description) frontmatterLines.push(`description: "${description}"`);
   frontmatterLines.push(`tags: [${tags.map(t => `"${t}"`).join(', ')}]`);
   frontmatterLines.push('---');

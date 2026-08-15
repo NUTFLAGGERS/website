@@ -176,7 +176,6 @@ event: "PwnCTF 2026"
 author: "handle"
 description: "Exploiting a heap overflow in a custom allocator to achieve RCE."
 score: "500 pts"
-place: "3rd place"
 tags: ["pwn", "rev"]
 ---
 
@@ -202,7 +201,6 @@ exploit_payload = b"A" * 64
 | `author` | ❌ | string | Author handle |
 | `description` | ❌ | string | Short summary shown in listings |
 | `score` | ❌ | string | Points value, e.g. `"500 pts"` |
-| `place` | ❌ | string | Team placement, e.g. `"1st place"` |
 | `tags` | ❌ | string[] | Categories — see [Tag Reference](#9-tag-reference) |
 
 ### Markdown Features Available

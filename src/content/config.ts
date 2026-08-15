@@ -35,7 +35,6 @@ const writeups = defineCollection({
     author: z.string().optional(),
     description: z.string().optional(),
     score: z.string().optional(),
-    place: z.string().optional(),
     tags: z.array(z.string()).default([]),
   }),
 });
