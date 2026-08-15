@@ -1,6 +1,8 @@
 ---
+# Example 1: Full Event Overview Writeup
 title: "CTF Name 2026"
 pubDate: "2026-08-14"
+type: "event"
 place: "1st place"
 score: "4200 pts"
 tags: ["web", "pwn", "crypto", "rev", "forensics"]
@@ -10,16 +12,37 @@ challenges:
     points: "200 pts"
 ---
 
-# CTF Name 2026 Writeup
+---
+# Example 2: Individual Challenge Writeup (tied to an event)
+title: "Challenge Name — Topic / Technique"
+pubDate: "2026-08-14"
+type: "individual"
+event: "CTF Name 2026"
+author: "0xCat"
+score: "300 pts"
+tags: ["web", "pwn"]
+---
 
-Summary of team performance and overall CTF thoughts.
+---
+# Example 3: Standalone / Independent Writeup (not tied to any event)
+title: "Research Article / Vulnerability Deep Dive"
+pubDate: "2026-08-14"
+updatedDate: "2026-08-15"  # Optional: updatedDate or lastUpdated
+type: "individual"
+author: "w4ve"
+tags: ["pwn", "crypto"]
+---
 
-## Challenge 1 (Category - 200 pts)
+# Writeup Content Title
 
-Exploit details and step-by-step solution.
+Summary of the writeup or challenge solution.
+
+## Vulnerability & Analysis
+
+Step-by-step technical walkthrough.
 
 ```python
-# Solve script
+# Solve script or exploit payload
 import requests
 
 print("Flag: nutflaggers{...}")

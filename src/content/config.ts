@@ -17,9 +17,15 @@ const writeups = defineCollection({
   schema: z.object({
     title: z.string(),
     pubDate: z.string(),
+    updatedDate: z.string().optional(),
+    lastUpdated: z.string().optional(),
+    type: z.enum(['event', 'individual']).optional().default('event'),
+    event: z.string().optional(),
+    author: z.string().optional(),
+    description: z.string().optional(),
     score: z.string().optional(),
     place: z.string().optional(),
-    tags: z.array(z.string()),
+    tags: z.array(z.string()).default([]),
     challenges: z.array(
       z.object({
         name: z.string(),
@@ -47,7 +53,9 @@ const team = defineCollection({
   schema: z.object({
     handle: z.string(),
     role: z.string(),
+    categories: z.array(z.string()).default([]),
     skills: z.array(z.string()).default([]),
+    socials: z.record(z.string()).optional(),
   }),
 });
 

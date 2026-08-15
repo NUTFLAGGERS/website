@@ -1,8 +1,21 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import TeamMember from '../components/TeamMember.astro';
 import { getCollection } from 'astro:content';
 
-const teamMembers = await getCollection('team');
+const allMembers = await getCollection('team');
+
+// Gather unique categories from all team members
+const categorySet = new Set<string>();
+allMembers.forEach((member) => {
+  (member.data.categories || []).forEach((cat) => categorySet.add(cat));
+});
+
+const allCategories = Array.from(categorySet).sort((a, b) => {
+  if (a.toLowerCase() === 'exco') return -1;
+  if (b.toLowerCase() === 'exco') return 1;
+  return a.localeCompare(b);
+});
 ---
 
 <BaseLayout title="About Us — NUTFLAGGERS" description="About NUTFLAGGERS student CTF team, member roster, and contact info.">
@@ -12,14 +25,27 @@ const teamMembers = await getCollection('team');
       We are NUTFLAGGERS — a student CTF team. We compete, write things up, build tools, and try to learn something every time. If you're interested in security, come find us.
     </p>
 
-    <div class="section-title" style="margin-top: 32px;">── the team</div>
-    <div class="team-list">
-      {teamMembers.map((member) => (
-        <div class="team-row">
-          <span class="handle">{member.data.handle}</span> · {member.data.role}
+    {allCategories.map((cat) => {
+      const catMembers = allMembers.filter((m) =>
+        (m.data.categories || []).includes(cat)
+      );
+
+      return (
+        <div style="margin-top: 32px;">
+          <div class="section-title">── {cat}</div>
+          <div class="team-list">
+            {catMembers.map((member) => (
+              <TeamMember
+                handle={member.data.handle}
+                role={member.data.role}
+                skills={member.data.skills}
+                socials={member.data.socials}
+              />
+            ))}
+          </div>
         </div>
-      ))}
-    </div>
+      );
+    })}
 
     <div class="section-title" style="margin-top: 36px;">── find us</div>
     <div class="socials">
