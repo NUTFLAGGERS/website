@@ -190,7 +190,6 @@ Your writeup content...
 # Code blocks with syntax highlighting
 exploit_payload = b"A" * 64
 ```
-```
 
 ### Frontmatter Field Reference
 
