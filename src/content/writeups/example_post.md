@@ -17,13 +17,14 @@ An example CTF challenge writeup / post template demonstrating technical breakdo
 
 > **Target**: `http://challenge.example.com:8080`  
 > **Category**: Web / Pwn  
-> **Difficulty**: Medium  
+> **Difficulty**: Medium
 
 This challenge simulates a real-world web API service backed by a C native binary plugin. The service contained both a template injection vulnerability and an unauthenticated heap corruption primitive.
 
 ## Vulnerability Analysis
 
 ### 1. Template Injection Primitive
+
 The endpoint `/api/render` formats user inputs using `render_template_string`:
 
 ```python
@@ -62,6 +63,6 @@ if __name__ == "__main__":
 **Flag**: `nutflaggers{sst1_t3mpl4t3_1nj3ct10n_ftw}`
 
 ### Key Takeaways
+
 - Always sanitize user input prior to rendering template strings.
 - Never pass unescaped user parameters directly into `render_template_string()`.
-
