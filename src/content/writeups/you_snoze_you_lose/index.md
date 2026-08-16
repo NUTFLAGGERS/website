@@ -12,11 +12,11 @@ tags: ["osint"]
 
 # you snoze you lose — texsaw-2026 (osint)
 
-![20260124_221412.jpg](20260124_221412.jpg)
+![20260124_221412.jpg](./20260124_221412.jpg)
 
 [https://youtu.be/TrnpIMLa0z8?si=_oz-IEQsGgLHedaW&t=1422](https://youtu.be/TrnpIMLa0z8?si=_oz-IEQsGgLHedaW&t=1422)
 
 Google Reverse image will show that this is Daytona 2026 24 race. At fog (trivia is that 6 hour yellow flag, IIRC no overtaking)
 
 texsaw{6_7}
-![image.png](image.png)
+![image.png](./image.png)

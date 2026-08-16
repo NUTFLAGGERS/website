@@ -129,15 +129,3 @@ zipfile.ZipFile('flag.txt.zip').read('flag.txt', pwd=b'39BX@MCPU')
 The archive is **traditional ZipCrypto**, which is cryptographically broken. Because the plaintext begins with the known flag prefix `CDDC2026{`, a **known‑plaintext attack** (`bkcrack`) can recover the internal keystream and decrypt `flag.txt` **without ever solving the cubes**. It's messier than the intended solve here, but worth remembering: _stored + ZipCrypto + known prefix = decryptable without the password._
 
 ---
-
-## 5. Files
-
-```
-challenges/737/distfiles/extracted/chal/
-  extract.py     # dot/glyph OCR
-  geom.py        # per-map grid detection
-  nonogram.py    # 9x9 nonogram solver
-  solve_all.py   # full pipeline -> cube*.npy
-  best_faces.png # the 9 rendered glyphs
-  FLAG.txt
-```

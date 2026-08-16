@@ -17,6 +17,4 @@ First, crack this initial cryptogram. Now, apply OSINT tools to find who authors
 
 flag format: txsaw{first_last} such as:/ txsaw{John_Scalzi}
 
-ciphertext.txt
-
 use quipqiup and you get text. reverse search the text. you get creator, which is georges perec. txsaw{georges_perec}
