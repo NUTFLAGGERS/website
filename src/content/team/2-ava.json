@@ -1,10 +1,10 @@
 {
   "handle": "rui jie (ava)",
-  "role": "co-captain, infra lead",
+  "role": "co-captain, admin",
   "categories": ["exco", "infra team"],
-  "skills": ["pwn", "rev"],
+  "skills": ["osint", "rev"],
   "socials": {
-    "github": "",
-    "twitter": ""
+    "github": "https://github.com/Ava-Vispilio",
+    "linkedin": "https://www.linkedin.com/in/yong-rui-jie/"
   }
 }
