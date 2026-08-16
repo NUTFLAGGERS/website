@@ -12,7 +12,7 @@ tags: ["for"]
 
 # bossman is puffman — sillyctf-2 (for)
 
-![sike.png](sike.png)
+![sike.png](./sike.png)
 mp3 file
 
 on audacity you see this

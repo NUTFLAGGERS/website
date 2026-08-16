@@ -29,4 +29,4 @@ Turn to a specific position in the orthographic camera mode
 
 ![image.png](image.png)
 
-![image.png](image.png)
+![image.png](image_1.png)
