@@ -1,0 +1,161 @@
+---
+const { slug } = Astro.props;
+
+const allFiles = import.meta.glob('/src/content/writeups/**/*.*', { 
+  query: '?url', 
+  import: 'default',
+  eager: true 
+});
+const downloadableFiles = Object.entries(allFiles)
+  .filter(([filePath]) => {
+    if (filePath.endsWith('.md') || filePath.endsWith('.mdx')) return false;
+    
+    const normalizedFilePath = filePath.toLowerCase();
+    const targetPath = `/src/content/writeups/${slug}/`.toLowerCase();
+    
+    return normalizedFilePath.includes(targetPath);
+  })
+  .map(([filePath, url]) => {
+    const fileName = filePath.split('/').pop();
+    return { fileName, url: url as string };
+  });
+const fileUrls = JSON.stringify(downloadableFiles.map(f => f.url));
+---
+
+{downloadableFiles.length > 0 && (
+  <div class="asset-dashboard">
+    <div class="asset-header">
+      <h3>Artifacts</h3>
+      
+      {downloadableFiles.length > 1 && (
+        <button class="download-all-btn" data-urls={fileUrls}>
+          Download All
+        </button>
+      )}
+    </div>
+
+    <div class="asset-list-container">
+      <ul class="asset-grid">
+        {downloadableFiles.map((file) => (
+          <li>
+            <a href={file.url} download class="asset-item" title={file.fileName}>
+              <span class="icon">↓</span>
+              <span class="filename">{file.fileName}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+)}
+
+<style>
+  .asset-dashboard {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 2rem 0;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  .asset-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .asset-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .download-all-btn {
+    background-color: #333;
+    color: white; 
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .download-all-btn:hover {
+    background-color: #555;
+  }
+
+  .asset-list-container {
+    max-height: 250px; 
+    overflow-y: auto;
+    padding: 1rem 1.5rem;
+  }
+
+  .asset-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .asset-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem; 
+    background-color: #333; 
+    border-radius: 4px; 
+    text-decoration: none;
+    color: white;
+    transition: background-color 0.2s;
+  }
+
+  .asset-item:hover {
+    background-color: #555;
+  }
+
+  .filename {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.9rem;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.download-all-btn');
+    
+    buttons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        const target = event.currentTarget as HTMLButtonElement;
+        const urls = JSON.parse(target.dataset.urls || '[]');
+        
+        const originalText = target.innerText;
+        target.innerText = "Downloading...";
+        target.disabled = true;
+
+        urls.forEach((url: string, index: number) => {
+          setTimeout(() => {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            if (index === urls.length - 1) {
+              setTimeout(() => {
+                target.innerText = originalText;
+                target.disabled = false;
+              }, 500);
+            }
+          }, index * 300); 
+        });
+      });
+    });
+  });
+</script>

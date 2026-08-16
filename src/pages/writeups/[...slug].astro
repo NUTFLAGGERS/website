@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import DownloadBar from '../../components/DownloadBar.astro';
 
 export async function getStaticPaths() {
   const writeups = await getCollection('writeups');
@@ -41,6 +42,7 @@ const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
           ))}
         </div>
       )}
+      <DownloadBar slug={entry.slug} />
     </div>
 
     <div class="writeup-content">

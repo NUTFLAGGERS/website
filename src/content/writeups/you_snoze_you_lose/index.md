@@ -12,7 +12,7 @@ tags: ["osint"]
 
 # you snoze you lose — texsaw-2026 (osint)
 
-![20260124_221412.jpg](./20260124_221412.jpg)
+![20260124_221412.jpg](./20260124_221412.png)
 
 [https://youtu.be/TrnpIMLa0z8?si=_oz-IEQsGgLHedaW&t=1422](https://youtu.be/TrnpIMLa0z8?si=_oz-IEQsGgLHedaW&t=1422)
 
