@@ -15,7 +15,7 @@ ooo.py
 Inspecting the code, its those cancer things where u have to know what character as they look similar but have different unicode
 
 Reference: [https://gist.github.com/StevenACoffman/a5f6f682d94e38ed804182dc2693ed4b](https://gist.github.com/StevenACoffman/a5f6f682d94e38ed804182dc2693ed4b)
-![- Screenshot](image.png)
+![- Screenshot](./image.png)
 
 Simplifies to:
 index = ö XOR ((ord(c1)ord(c2)) % ord(c1)) = ö XOR 0 = ö (since (ab) % a = 0 for a != 0

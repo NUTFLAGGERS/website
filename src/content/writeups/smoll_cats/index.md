@@ -12,11 +12,11 @@ description: |
 tags: ["crypto"]
 ---
 
-![Smoll cats - Screenshot](image.png)
+![Smoll cats - Screenshot](./image.png)
 
-lactf{sm0l_pr1m3s_4r3_n0t_s3cur3}
-
-![Smoll cats - Screenshot](image_1.png)
+cat the flag text file inside the zip:
+`lactf{wHY_aR3_tH3_c4T5_S0_5M0lL_4nD_R0uNd}`
+![Smoll cats - Screenshot](./image_1.png)
 
 Terminal output:
 

@@ -30,8 +30,8 @@ The description heavily implies that the flag is present in the DOM but is activ
 
 ---
 
-![Mutation mutation - Screenshot](image.png)
-![Mutation mutation - Screenshot](image_1.png)
+![Mutation mutation - Screenshot](./image.png)
+![Mutation mutation - Screenshot](./image_1.png)
 
 - **Flag:** `lactf{с0nѕtаnt_mutаtі0n_1sfun!ІlІ1| ض픋ԡೇ∑ᦞ୞땾᥉༂↗ۑீ᤼യ⌃±❣Ӣ◼ௌௌௌௌௌ}`
 

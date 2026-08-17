@@ -29,6 +29,6 @@ my guess is the order will output the flag with the ASCII characters
 
 I built the image layer by layer and use arrow keys to see what letters were highlighted
 
-![Before. Screenshot](before.png)
+![Before. Screenshot](./before.png)
 
-![After. Screenshot](after.png)
+![After. Screenshot](./after.png)

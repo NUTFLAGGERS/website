@@ -25,6 +25,6 @@ View it in 3dviewer.net
 
 Turn to a specific position in the orthographic camera mode
 
-![- Screenshot](image.png)
+![- Screenshot](./image.png)
 
-![- Screenshot](image_1.png)
+![- Screenshot](./image_1.png)

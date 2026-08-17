@@ -14,7 +14,7 @@ tags: ["for"]
 mp3 file
 
 on audacity you see this
-![For bossman is puffman - Screenshot](image.png)
+![For bossman is puffman - Screenshot](./image.png)
 
 long bar = right, short bar = left
 

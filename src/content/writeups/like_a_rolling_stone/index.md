@@ -11,4 +11,4 @@ tags: ["stego"]
 ---
 
 and a wav file...
-![Like a rolling stone - Screenshot](image.png)
+![Like a rolling stone - Screenshot](./image.png)

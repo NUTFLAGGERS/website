@@ -13,4 +13,5 @@ tags: ["forensics"]
 ## Musical Genius
 
 Listen to this cool beat I just made!
-[image.png](./image.png)
+
+![Musical Genius Screenshot](./image.png)

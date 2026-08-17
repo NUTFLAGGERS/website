@@ -24,8 +24,8 @@ tags: ["stego"]
 >
 > err
 >
-> [image1](image.png)
+> ![image1](./image.png)
 >
-> wmpp}yŠ|xsmpixcmrcslms
+> wmpp}yŠ| xsmpixcmrcslms 
 >
-> [image2](image_1.png)
+> ![image2](./image_1.png)
