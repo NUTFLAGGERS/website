@@ -117,6 +117,13 @@ section + section {
   font-weight: 500;
 }
 
+.empty-msg {
+  color: var(--dim);
+  font-size: 13px;
+  font-style: italic;
+  padding: 8px 0;
+}
+
 /* Row elements */
 .row {
   display: flex;

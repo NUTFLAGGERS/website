@@ -9,6 +9,7 @@ const events = defineCollection({
     location: z.string().optional().default(''),
     description: z.string().optional().default(''),
     featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
     url: z.string().optional(),
     tags: z.array(z.string()).default([]),
     score: z.string().optional(),
@@ -35,6 +36,7 @@ const writeups = defineCollection({
     author: z.string().optional(),
     description: z.string().optional(),
     score: z.string().optional(),
+    draft: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
   }),
 });
@@ -47,6 +49,7 @@ const projects = defineCollection({
     tag: z.string(),
     description: z.string(),
     featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
     githubUrl: z.string().optional(),
     url: z.string().optional(),
   }),
@@ -60,6 +63,7 @@ const team = defineCollection({
     categories: z.array(z.string()).default([]),
     skills: z.array(z.string()).default([]),
     socials: z.record(z.string()).optional(),
+    draft: z.boolean().default(false),
   }),
 });
 
@@ -72,6 +76,7 @@ const resources = defineCollection({
     url: z.string(),
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
   }),
 });
 

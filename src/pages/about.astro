@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import TeamMember from '../components/TeamMember.astro';
 import { getCollection } from 'astro:content';
 
-const allMembers = await getCollection('team');
+const allMembers = await getCollection('team', ({ data }) => !data.draft);
 
 // Gather unique categories from all team members
 const categorySet = new Set<string>();
@@ -22,7 +22,7 @@ const allCategories = Array.from(categorySet).sort((a, b) => {
   <section id="about">
     <div class="section-title">── about us</div>
     <p class="about-text">
-      We are NUTFLAGGERS — a student CTF team. We compete, write things up, build tools, and try to learn something every time. If you're interested in security, come find us.
+      We are NUTFLAGGERS, a student CTF team from NTU. We learn, compete and capture.
     </p>
 
     {allCategories.map((cat) => {

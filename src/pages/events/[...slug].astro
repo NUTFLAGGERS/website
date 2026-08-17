@@ -1,0 +1,228 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagBadge from '../../components/TagBadge.astro';
+
+export async function getStaticPaths() {
+  const events = await getCollection('events', ({ data }) => !data.draft);
+  return events.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+
+const metaParts: string[] = [];
+if (entry.data.location) metaParts.push(`📍 ${entry.data.location}`);
+if (entry.data.description) metaParts.push(entry.data.description);
+if (entry.data.place) metaParts.push(`🏆 ${entry.data.place}`);
+if (entry.data.score) metaParts.push(`⭐ ${entry.data.score}`);
+---
+
+<BaseLayout
+  title={`${entry.data.title} — NUTFLAGGERS Events`}
+  description={entry.data.description || `Details and information for ${entry.data.title}`}
+>
+  <article class="event-article">
+    <div class="event-header">
+      <a href={`${base}events/`} class="back-link">← back to events</a>
+      <h1>{entry.data.title}</h1>
+      
+      <div class="event-meta">
+        <span class="event-date">📅 {entry.data.date}</span>
+        {metaParts.length > 0 && <span class="meta-details"> · {metaParts.join(' · ')}</span>}
+      </div>
+
+      {entry.data.url && (
+        <div class="external-link-row">
+          <a href={entry.data.url} target="_blank" rel="noopener noreferrer" class="ext-link-btn">
+            Official Event Link ↗
+          </a>
+        </div>
+      )}
+
+      {entry.data.tags && entry.data.tags.length > 0 && (
+        <div class="tags">
+          {entry.data.tags.map((tag) => (
+            <TagBadge tag={tag} />
+          ))}
+        </div>
+      )}
+    </div>
+
+    {entry.data.challenges && entry.data.challenges.length > 0 && (
+      <section class="event-challenges-section">
+        <h2>── challenges</h2>
+        <div class="challenges-list">
+          {entry.data.challenges.map((c) => (
+            <div class="challenge-item">
+              <div class="c-info">
+                {c.writeupSlug ? (
+                  <a href={`${base}writeups/${c.writeupSlug}/`} class="c-name c-link">
+                    {c.name}
+                  </a>
+                ) : (
+                  <span class="c-name">{c.name}</span>
+                )}
+                <TagBadge tag={c.category} />
+              </div>
+              <span class="c-pts">{c.points}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <div class="event-content">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .event-article {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .event-header {
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+  }
+  .back-link {
+    font-size: 13px;
+    display: inline-block;
+    margin-bottom: 12px;
+    color: var(--dim);
+  }
+  .back-link:hover {
+    color: var(--link);
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--fg);
+  }
+  .event-meta {
+    color: var(--dim);
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .external-link-row {
+    margin-bottom: 12px;
+  }
+  .ext-link-btn {
+    display: inline-block;
+    font-size: 12px;
+    padding: 4px 10px;
+    background: #ffffff0d;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--link);
+  }
+  .ext-link-btn:hover {
+    background: #ffffff1a;
+    border-color: var(--link);
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  /* Challenges Section */
+  .event-challenges-section {
+    margin-bottom: 32px;
+  }
+  .event-challenges-section h2 {
+    font-size: 15px;
+    color: var(--dim);
+    margin-bottom: 12px;
+  }
+  .challenges-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #141414;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+  }
+  .challenge-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+  .c-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .c-name {
+    color: var(--fg);
+  }
+  .c-link {
+    color: var(--link);
+    text-decoration: underline;
+  }
+  .c-pts {
+    color: var(--dim);
+    font-size: 12px;
+  }
+
+  /* Markdown Content Styling */
+  .event-content {
+    line-height: 1.8;
+    color: #b0b0b0;
+  }
+  .event-content :global(h2) {
+    font-size: 17px;
+    font-weight: 500;
+    margin-top: 28px;
+    margin-bottom: 12px;
+    color: var(--fg);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+  }
+  .event-content :global(h3) {
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    color: var(--fg);
+  }
+  .event-content :global(p) {
+    margin-bottom: 16px;
+  }
+  .event-content :global(ul),
+  .event-content :global(ol) {
+    margin-bottom: 16px;
+    padding-left: 24px;
+  }
+  .event-content :global(li) {
+    margin-bottom: 6px;
+  }
+  .event-content :global(blockquote) {
+    border-left: 3px solid var(--link);
+    padding: 8px 16px;
+    margin: 16px 0;
+    background: #ffffff05;
+    border-radius: 0 4px 4px 0;
+    color: var(--fg);
+  }
+  .event-content :global(hr) {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0;
+  }
+  .event-content :global(strong) {
+    color: var(--fg);
+  }
+</style>

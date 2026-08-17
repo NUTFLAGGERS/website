@@ -5,7 +5,7 @@ import TagBadge from '../../components/TagBadge.astro';
 import DownloadBar from '../../components/DownloadBar.astro';
 
 export async function getStaticPaths() {
-  const writeups = await getCollection('writeups');
+  const writeups = await getCollection('writeups', ({ data }) => !data.draft);
   return writeups.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry },

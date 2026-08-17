@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Row from '../../components/Row.astro';
 import { getCollection } from 'astro:content';
 
-const writeups = await getCollection('writeups');
+const writeups = await getCollection('writeups', ({ data }) => !data.draft);
 writeups.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 const baseUrl = import.meta.env.BASE_URL;
 const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
@@ -12,31 +12,35 @@ const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 <BaseLayout title="CTF Writeups — NUTFLAGGERS" description="Detailed cybersecurity CTF writeups, challenge solutions, and exploit walkthroughs.">
   <section id="writeups">
     <div class="section-title">── ctf writeups</div>
-    {writeups.map((w) => {
-      const metaParts: string[] = [];
-      if (w.data.event) metaParts.push(w.data.event);
-      if (w.data.author) metaParts.push(`by ${w.data.author}`);
-      if (w.data.score) metaParts.push(w.data.score);
-      const metaText = metaParts.join(' · ');
+    {writeups.length > 0 ? (
+      writeups.map((w) => {
+        const metaParts: string[] = [];
+        if (w.data.event) metaParts.push(w.data.event);
+        if (w.data.author) metaParts.push(`by ${w.data.author}`);
+        if (w.data.score) metaParts.push(w.data.score);
+        const metaText = metaParts.join(' · ');
 
-      const searchTerms = [
-        w.data.title,
-        w.data.event || '',
-        w.data.author || '',
-        (w.data.tags || []).join(' '),
-        w.data.description || '',
-      ].join(' ');
+        const searchTerms = [
+          w.data.title,
+          w.data.event || '',
+          w.data.author || '',
+          (w.data.tags || []).join(' '),
+          w.data.description || '',
+        ].join(' ');
 
-      return (
-        <Row
-          date={w.data.pubDate}
-          title={w.data.title}
-          url={`${base}writeups/${w.slug}/`}
-          meta={metaText}
-          tags={w.data.tags}
-          searchKeywords={searchTerms}
-        />
-      );
-    })}
+        return (
+          <Row
+            date={w.data.pubDate}
+            title={w.data.title}
+            url={`${base}writeups/${w.slug}/`}
+            meta={metaText}
+            tags={w.data.tags}
+            searchKeywords={searchTerms}
+          />
+        );
+      })
+    ) : (
+      <p class="empty-msg">More content coming soon!</p>
+    )}
   </section>
 </BaseLayout>

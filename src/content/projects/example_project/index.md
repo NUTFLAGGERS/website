@@ -5,6 +5,7 @@ tag: "tool"
 description: "An example open-source security tool and automation framework."
 featured: true
 githubUrl: "https://github.com/example/example-project"
+draft: true
 ---
 
 This is an example project entry showcasing open-source security tools developed by the team.

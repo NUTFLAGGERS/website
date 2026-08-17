@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Row from '../components/Row.astro';
 import { getCollection } from 'astro:content';
 
-const resources = await getCollection('resources');
+const resources = await getCollection('resources', ({ data }) => !data.draft);
 
 // Sort resources: featured first, then alphabetically by category, then by title
 resources.sort((a, b) => {
@@ -20,15 +20,19 @@ resources.sort((a, b) => {
 <BaseLayout title="Resources — NUTFLAGGERS" description="Curated CTF learning platforms, exploit development tools, reverse engineering environments, and security reference guides.">
   <section id="resources">
     <div class="section-title">── curated ctf resources & tools</div>
-    {resources.map((res) => (
-      <Row
-        date={res.data.category}
-        title={res.data.title}
-        url={res.data.url}
-        meta={res.data.description}
-        tags={res.data.tags}
-        searchKeywords={`${res.data.title} ${res.data.category} ${res.data.description} ${res.data.tags.join(' ')}`}
-      />
-    ))}
+    {resources.length > 0 ? (
+      resources.map((res) => (
+        <Row
+          date={res.data.category}
+          title={res.data.title}
+          url={res.data.url}
+          meta={res.data.description}
+          tags={res.data.tags}
+          searchKeywords={`${res.data.title} ${res.data.category} ${res.data.description} ${res.data.tags.join(' ')}`}
+        />
+      ))
+    ) : (
+      <p class="empty-msg">More content coming soon!</p>
+    )}
   </section>
 </BaseLayout>

@@ -3,10 +3,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Row from '../components/Row.astro';
 import { getCollection } from 'astro:content';
 
-const events = await getCollection('events');
-const writeups = await getCollection('writeups');
-const projects = await getCollection('projects');
-const resources = await getCollection('resources');
+const events = await getCollection('events', ({ data }) => !data.draft);
+const writeups = await getCollection('writeups', ({ data }) => !data.draft);
+const projects = await getCollection('projects', ({ data }) => !data.draft);
+const resources = await getCollection('resources', ({ data }) => !data.draft);
 
 const baseUrl = import.meta.env.BASE_URL;
 const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
@@ -57,33 +57,39 @@ const featuredResources = resources.filter((r) => r.data.featured).slice(0, 3);
       <div class="section-title">── upcoming events</div>
       <a href={`${base}events/`} class="section-more">all events →</a>
     </div>
-    {upcomingEvents.map((event) => {
-      const metaParts: string[] = [];
-      if (event.data.location) metaParts.push(event.data.location);
-      if (event.data.description) metaParts.push(event.data.description);
-      const metaText = metaParts.join(' · ');
+    {upcomingEvents.length > 0 ? (
+      upcomingEvents.map((event) => {
+        const metaParts: string[] = [];
+        if (event.data.location) metaParts.push(event.data.location);
+        if (event.data.description) metaParts.push(event.data.description);
+        const metaText = metaParts.join(' · ');
 
-      const searchTerms = [
-        event.data.title,
-        event.data.location || '',
-        event.data.description || '',
-        (event.data.tags || []).join(' '),
-        (event.data.challenges || []).map((c) => c.name).join(' '),
-      ].join(' ');
+        const searchTerms = [
+          event.data.title,
+          event.data.location || '',
+          event.data.description || '',
+          (event.data.tags || []).join(' '),
+          (event.data.challenges || []).map((c) => c.name).join(' '),
+        ].join(' ');
 
-      return (
-        <Row
-          date={event.data.date}
-          title={event.data.title}
-          url={event.data.url || '#'}
-          meta={metaText}
-          featured={event.data.featured}
-          tags={event.data.tags}
-          challenges={event.data.challenges}
-          searchKeywords={searchTerms}
-        />
-      );
-    })}
+        const eventUrl = `${base}events/${event.slug}/`;
+
+        return (
+          <Row
+            date={event.data.date}
+            title={event.data.title}
+            url={eventUrl}
+            meta={metaText}
+            featured={event.data.featured}
+            tags={event.data.tags}
+            challenges={event.data.challenges}
+            searchKeywords={searchTerms}
+          />
+        );
+      })
+    ) : (
+      <p class="empty-msg">More content coming soon!</p>
+    )}
   </section>
 
   <!-- Featured Events -->
@@ -92,33 +98,39 @@ const featuredResources = resources.filter((r) => r.data.featured).slice(0, 3);
       <div class="section-title">── featured events</div>
       <a href={`${base}events/`} class="section-more">all events →</a>
     </div>
-    {featuredEvents.map((event) => {
-      const metaParts: string[] = [];
-      if (event.data.location) metaParts.push(event.data.location);
-      if (event.data.description) metaParts.push(event.data.description);
-      const metaText = metaParts.join(' · ');
+    {featuredEvents.length > 0 ? (
+      featuredEvents.map((event) => {
+        const metaParts: string[] = [];
+        if (event.data.location) metaParts.push(event.data.location);
+        if (event.data.description) metaParts.push(event.data.description);
+        const metaText = metaParts.join(' · ');
 
-      const searchTerms = [
-        event.data.title,
-        event.data.location || '',
-        event.data.description || '',
-        (event.data.tags || []).join(' '),
-        (event.data.challenges || []).map((c) => c.name).join(' '),
-      ].join(' ');
+        const searchTerms = [
+          event.data.title,
+          event.data.location || '',
+          event.data.description || '',
+          (event.data.tags || []).join(' '),
+          (event.data.challenges || []).map((c) => c.name).join(' '),
+        ].join(' ');
 
-      return (
-        <Row
-          date={event.data.date}
-          title={event.data.title}
-          url={event.data.url || '#'}
-          meta={metaText}
-          featured={event.data.featured}
-          tags={event.data.tags}
-          challenges={event.data.challenges}
-          searchKeywords={searchTerms}
-        />
-      );
-    })}
+        const eventUrl = `${base}events/${event.slug}/`;
+
+        return (
+          <Row
+            date={event.data.date}
+            title={event.data.title}
+            url={eventUrl}
+            meta={metaText}
+            featured={event.data.featured}
+            tags={event.data.tags}
+            challenges={event.data.challenges}
+            searchKeywords={searchTerms}
+          />
+        );
+      })
+    ) : (
+      <p class="empty-msg">More content coming soon!</p>
+    )}
   </section>
 
   <!-- Recent Writeups -->
@@ -127,32 +139,36 @@ const featuredResources = resources.filter((r) => r.data.featured).slice(0, 3);
       <div class="section-title">── recent writeups</div>
       <a href={`${base}writeups/`} class="section-more">all writeups →</a>
     </div>
-    {recentWriteups.map((w) => {
-      const metaParts: string[] = [];
-      if (w.data.event) metaParts.push(w.data.event);
-      if (w.data.author) metaParts.push(`by ${w.data.author}`);
-      if (w.data.score) metaParts.push(w.data.score);
-      const metaText = metaParts.join(' · ');
+    {recentWriteups.length > 0 ? (
+      recentWriteups.map((w) => {
+        const metaParts: string[] = [];
+        if (w.data.event) metaParts.push(w.data.event);
+        if (w.data.author) metaParts.push(`by ${w.data.author}`);
+        if (w.data.score) metaParts.push(w.data.score);
+        const metaText = metaParts.join(' · ');
 
-      const searchTerms = [
-        w.data.title,
-        w.data.event || '',
-        w.data.author || '',
-        (w.data.tags || []).join(' '),
-        w.data.description || '',
-      ].join(' ');
+        const searchTerms = [
+          w.data.title,
+          w.data.event || '',
+          w.data.author || '',
+          (w.data.tags || []).join(' '),
+          w.data.description || '',
+        ].join(' ');
 
-      return (
-        <Row
-          date={w.data.pubDate}
-          title={w.data.title}
-          url={`${base}writeups/${w.slug}/`}
-          meta={metaText}
-          tags={w.data.tags}
-          searchKeywords={searchTerms}
-        />
-      );
-    })}
+        return (
+          <Row
+            date={w.data.pubDate}
+            title={w.data.title}
+            url={`${base}writeups/${w.slug}/`}
+            meta={metaText}
+            tags={w.data.tags}
+            searchKeywords={searchTerms}
+          />
+        );
+      })
+    ) : (
+      <p class="empty-msg">More content coming soon!</p>
+    )}
   </section>
 
   <!-- Projects -->
@@ -161,16 +177,20 @@ const featuredResources = resources.filter((r) => r.data.featured).slice(0, 3);
       <div class="section-title">── featured projects</div>
       <a href={`${base}projects/`} class="section-more">all projects →</a>
     </div>
-    {featuredProjects.map((proj) => (
-      <Row
-        date={proj.data.date}
-        title={proj.data.title}
-        url={proj.data.githubUrl || proj.data.url || '#'}
-        meta={`${proj.data.description} · ${proj.data.githubUrl ? 'github' : ''}`}
-        tags={[proj.data.tag]}
-        searchKeywords={`${proj.data.title} ${proj.data.description} ${proj.data.tag}`}
-      />
-    ))}
+    {featuredProjects.length > 0 ? (
+      featuredProjects.map((proj) => (
+        <Row
+          date={proj.data.date}
+          title={proj.data.title}
+          url={proj.data.githubUrl || proj.data.url || '#'}
+          meta={`${proj.data.description} · ${proj.data.githubUrl ? 'github' : ''}`}
+          tags={[proj.data.tag]}
+          searchKeywords={`${proj.data.title} ${proj.data.description} ${proj.data.tag}`}
+        />
+      ))
+    ) : (
+      <p class="empty-msg">More content coming soon!</p>
+    )}
   </section>
 
   <!-- Resources -->
@@ -179,16 +199,20 @@ const featuredResources = resources.filter((r) => r.data.featured).slice(0, 3);
       <div class="section-title">── ctf resources & tools</div>
       <a href={`${base}resources/`} class="section-more">all resources →</a>
     </div>
-    {featuredResources.map((res) => (
-      <Row
-        date={res.data.category}
-        title={res.data.title}
-        url={res.data.url}
-        meta={res.data.description}
-        tags={res.data.tags}
-        searchKeywords={`${res.data.title} ${res.data.category} ${res.data.description} ${res.data.tags.join(' ')}`}
-      />
-    ))}
+    {featuredResources.length > 0 ? (
+      featuredResources.map((res) => (
+        <Row
+          date={res.data.category}
+          title={res.data.title}
+          url={res.data.url}
+          meta={res.data.description}
+          tags={res.data.tags}
+          searchKeywords={`${res.data.title} ${res.data.category} ${res.data.description} ${res.data.tags.join(' ')}`}
+        />
+      ))
+    ) : (
+      <p class="empty-msg">More content coming soon!</p>
+    )}
   </section>
 
   <!-- About Snapshot -->
