@@ -18,8 +18,6 @@ description: |
 tags: ["protocol"]
 ---
 
-# Swarm Drone — CDDC2026 (Protocol, 350 pts)
-
 **Flag:** `CDDC2026{TRUST_TH3_K3Y_AND_V3R1FY_S1GNS}`
 
 ---
@@ -50,10 +48,12 @@ So the intended path is: **use the signing key to separate real from forged, the
 ## 2. Files
 
 ```
+
 chall.zip
 └── chal/
     ├── capture.pcap   # 13,259 MAVLink 2 frames over UDP
     └── swarm.key      # 805d92604587c75923be28ba9535e242e002019c4bf88cd65b05b0efd25119c4  (32 bytes hex)
+
 ```
 
 The pcap is a single UDP stream `192.168.1.10:14550 → 192.168.1.20:14550` (14550 is the canonical MAVLink/GCS port). **Every** payload begins with `0xFD` = the MAVLink **v2** start-of-frame magic.
@@ -65,16 +65,19 @@ The pcap is a single UDP stream `192.168.1.10:14550 → 192.168.1.20:14550` (145
 **Frame layout (v2):**
 
 ```
+
 +------+-----+-----------+-----------+-----+-------+--------+--------+---------+-----+-----------------+
 | 0xFD | len | incompat  | compat    | seq | sysid | compid | msgid  | payload | CRC | signature(13B)  |
 | 1    | 1   | 1         | 1         | 1   | 1     | 1      | 3      | len     | 2   | only if signed  |
 +------+-----+-----------+-----------+-----+-------+--------+--------+---------+-----+-----------------+
+
 ```
 
 - The **`incompat_flags`** field has bit 0 = `MAVLINK_IFLAG_SIGNED (0x01)`. When set, a **13-byte signature block** is appended: `link_id (1) || timestamp (6, LE, units of 10 µs) || signature (6)`.
 - **Signature computation:**
 
   ```
+
   signature6 = SHA256( secret_key || full_frame_without_sig || link_id || timestamp )[:6]
   ```
 
@@ -98,14 +101,17 @@ For each frame: read `len` and `incompat_flags`, slice out the header+payload+CR
 data = frame_without_sig + link_id + timestamp        # bytes
 expected = hashlib.sha256(KEY + data).digest()[:6]
 valid = (expected == given_sig6)
+
 ```
 
 Result:
 
 ```
+
 total frames : 13259
 valid (real) :  1958      <-- correct signature → authentic
 invalid      : 11301      <-- forged flood, dropped
+
 ```
 
 Every frame _claimed_ to be signed (`incompat=1`), but only 1,958 actually verify. The forged ~85% are discarded. The real packets are spread evenly across 20 drones (`sysid` 1–20).
@@ -115,7 +121,9 @@ Every frame _claimed_ to be signed (`incompat=1`), but only 1,958 actually verif
 Feeding only the valid frames to `pymavlink` (`dialects.v20.common`):
 
 ```
+
 valid msg types: GPS_RAW_INT × 1938,  HEARTBEAT × 20
+
 ```
 
 The GPS fixes sit around **37.566 °N, 126.978 °E** (Seoul), alt 80 m — sane, coordinated positions. The forged ones (had we kept them) are noise.
@@ -130,10 +138,12 @@ Each drone's GPS track, **ordered by the signature timestamp** (the 6-byte field
 Each of the 20 drones then clearly draws **~2 ASCII characters**. Concatenating drones in `sysid` order 1→20:
 
 ```
+
 sys1-5  :  C D D C 2 0 2 6 { T
 sys6-10 :  R U S T _ T H 3 _ K
 sys11-15:  3 Y _ A N D _ V 3 R
 sys16-20:  1 F Y _ S 1 G N S }
+
 ```
 
 → **`CDDC2026{TRUST_TH3_K3Y_AND_V3R1FY_S1GNS}`** — "trust the key and verify signatures."
@@ -189,7 +199,7 @@ def verify(f):
 
 for f in frames: f['valid'] = verify(f)
 print('valid', sum(f['valid'] for f in frames), '/ total', len(frames))
-# -> valid 1958 / total 13259
+
 ```
 
 ### b) Real GPS tracks → render each drone's glyph
@@ -227,6 +237,7 @@ for i, s in enumerate(sorted(by)):
 plt.savefig('glyphs.png', dpi=75, bbox_inches='tight')
 # Read drones sysid 1..20 left-to-right, top-to-bottom:
 # CDDC2026{TRUST_TH3_K3Y_AND_V3R1FY_S1GNS}
+
 ```
 
 ### c) Submission (base64-encoded flag)
@@ -236,6 +247,7 @@ import base64
 flag = "CDDC2026{TRUST_TH3_K3Y_AND_V3R1FY_S1GNS}"
 body = "i=753&f=" + base64.b64encode(flag.encode()).decode()
 # POST body to  ./api/?c=submit_flag   ->  "o" (Correct)
+
 ```
 
 ---

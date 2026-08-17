@@ -11,8 +11,6 @@ description: |
 tags: ["stego"]
 ---
 
-# Only in Ohio — SillyCTF Writeup
-
 - **Challenge:** Only in Ohio
 - **Category:** stego
 - **Points:**

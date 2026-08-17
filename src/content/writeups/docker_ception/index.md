@@ -12,8 +12,6 @@ description: |
 tags: ["web"]
 ---
 
-# docker-ception — texsaw-2026 (web)
-
 8.8.8.8; cat app.py
 
 We can run arbitary commands
@@ -47,7 +45,8 @@ def ping():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-```
+
+```bash
 
 [https://medium.com/@indigoshadowwashere/linux-docker-container-escapes-cheatsheet-49e47f21e27a](https://medium.com/@indigoshadowwashere/linux-docker-container-escapes-cheatsheet-49e47f21e27a)
 

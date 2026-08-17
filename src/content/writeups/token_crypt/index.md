@@ -12,6 +12,4 @@ description: |
 tags: ["crypto"]
 ---
 
-# tokencrypt — bsides-ctf (crypto)
-
 Web Terminal: [https://tokencrypt-3aad1fd8.term.challenges.bsidessf.net](https://tokencrypt-3aad1fd8.term.challenges.bsidessf.net) (or socat STDIO,raw,echo=0,escape=0x03 TCP:tokencrypt-3aad1fd8.challenges.bsidessf.net:1616)

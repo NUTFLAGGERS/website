@@ -14,14 +14,12 @@ description: |
 tags: ["term"]
 ---
 
-# kitty-terminal — bsides-ctf (term)
-
 —
 [https://github.com/kovidgoyal/kitty](https://github.com/kovidgoyal/kitty)
 
 If you base64 it you get this whole chunk
 
-![image.png](./image.png)
+![Kitty terminal - Screenshot](./image.png)
 
 hint: it takes a kitty to see a kitty
 normal cat didnt work so i installed the kitty terminal and ran the command given in the challenge description, then cat as normal

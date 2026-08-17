@@ -23,16 +23,20 @@ const fileUrls = JSON.stringify(downloadableFiles.map(f => f.url));
 ---
 
 {downloadableFiles.length > 0 && (
-  <div class="asset-dashboard">
-    <div class="asset-header">
-      <h3>Artifacts</h3>
+  <details class="asset-dashboard" open>
+    <summary class="asset-header">
+      <div class="asset-title-group">
+        <span class="chevron">▼</span>
+        <h3 class="asset-title">Artifacts</h3>
+        <span class="asset-count">({downloadableFiles.length})</span>
+      </div>
       
       {downloadableFiles.length > 1 && (
-        <button class="download-all-btn" data-urls={fileUrls}>
-          Download All
+        <button class="download-all-btn" data-urls={fileUrls} type="button">
+          ↓ Download All
         </button>
       )}
-    </div>
+    </summary>
 
     <div class="asset-list-container">
       <ul class="asset-grid">
@@ -46,50 +50,101 @@ const fileUrls = JSON.stringify(downloadableFiles.map(f => f.url));
         ))}
       </ul>
     </div>
-  </div>
+  </details>
 )}
 
 <style>
   .asset-dashboard {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin: 2rem 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin: 1.5rem 0 2rem 0;
     overflow: hidden;
-    font-family: system-ui, -apple-system, sans-serif;
+    background: #141414;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+  }
+
+  .asset-dashboard:hover {
+    border-color: #333333;
   }
 
   .asset-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #ccc;
+    padding: 0.75rem 1.25rem;
+    background: #ffffff06;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    transition: background-color 0.15s ease;
   }
 
-  .asset-header h3 {
+  .asset-header::-webkit-details-marker {
+    display: none;
+  }
+
+  .asset-header:hover {
+    background: #ffffff0d;
+  }
+
+  .asset-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chevron {
+    font-size: 10px;
+    color: var(--dim);
+    transition: transform 0.2s ease;
+    display: inline-block;
+  }
+
+  details:not([open]) .chevron {
+    transform: rotate(-90deg);
+  }
+
+  details[open] .chevron {
+    transform: rotate(0deg);
+  }
+
+  .asset-title {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--fg);
+  }
+
+  .asset-count {
+    font-size: 12px;
+    color: var(--dim);
   }
 
   .download-all-btn {
-    background-color: #333;
-    color: white; 
-    border: none;
-    padding: 0.5rem 1rem;
+    background-color: #ffffff10;
+    color: var(--fg); 
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.75rem;
     border-radius: 4px;
-    font-weight: 600;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.15s ease;
   }
 
   .download-all-btn:hover {
-    background-color: #555;
+    background-color: var(--link);
+    color: #111111;
+    border-color: var(--link);
   }
 
   .asset-list-container {
     max-height: 250px; 
     overflow-y: auto;
-    padding: 1rem 1.5rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--border);
   }
 
   .asset-grid {
@@ -98,30 +153,39 @@ const fileUrls = JSON.stringify(downloadableFiles.map(f => f.url));
     margin: 0;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   .asset-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem; 
-    background-color: #333; 
+    padding: 0.5rem 0.75rem; 
+    background-color: #ffffff06; 
+    border: 1px solid var(--border);
     border-radius: 4px; 
     text-decoration: none;
-    color: white;
-    transition: background-color 0.2s;
+    color: var(--fg);
+    transition: all 0.15s ease;
   }
 
   .asset-item:hover {
-    background-color: #555;
+    background-color: #ffffff0f;
+    border-color: var(--link);
+    color: var(--link);
+    text-decoration: none;
+  }
+
+  .icon {
+    color: var(--link);
+    font-size: 12px;
   }
 
   .filename {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 0.9rem;
+    font-size: 12px;
   }
 </style>
 
@@ -131,6 +195,8 @@ const fileUrls = JSON.stringify(downloadableFiles.map(f => f.url));
     
     buttons.forEach(button => {
       button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        event.preventDefault();
         const target = event.currentTarget as HTMLButtonElement;
         const urls = JSON.parse(target.dataset.urls || '[]');
         

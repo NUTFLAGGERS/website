@@ -14,8 +14,6 @@ description: |
 tags: ["misc"]
 ---
 
-# CDDC2026 — "Def.ender - Off-stage"
-
 ---
 
 ## 1. The challenge

@@ -7,12 +7,10 @@ author: "kuri™"
 score: ""
 description: |
   > I don't know where any buildings are around campus! It's even a headache looking on Google Maps.
-  > 
+  >
   > View Hint:It's case sensitive!
 tags: ["osint"]
 ---
-
-# Buildings around campus
 
 ## 1. Challenge summary
 

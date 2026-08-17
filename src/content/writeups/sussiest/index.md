@@ -10,8 +10,6 @@ description: |
 tags: ["osint"]
 ---
 
-# osint/Sussiest Challenge
-
 **Flag:** `sillyCTF{january_1}`
 
 ## 1. Challenge summary

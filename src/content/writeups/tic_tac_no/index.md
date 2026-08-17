@@ -7,14 +7,12 @@ author: "pucaru"
 score: ""
 description: |
   > Tic-tac-toe is a draw when played perfectly. Can you be more perfect than my perfect bot?
-  > 
+  >
   > nc chall.lac.tf 30001
-  > 
+  >
   > Flag Format: `lactf{}`
 tags: ["pwn"]
 ---
-
-# tictactoe — lactf-26 Writeup
 
 - **Challenge:** tictactoe
 - **Category:** pwn
@@ -26,6 +24,7 @@ For indexes `< 0` & `>= 9`, it will run:
 
 ```c
 board[index]  = player;
+
 ```
 
 ```bash
@@ -36,6 +35,7 @@ $1 = (<data variable, no debug info> *) 0x4068 <board>
 (gdb) p &computer
 $2 = (<data variable, no debug info> *) 0x4051 <computer>
 (gdb)
+
 ```
 
 `0x4068 - 0x4051 = 0x0017 = 23 bytes`
@@ -46,6 +46,7 @@ Because the code runs:
 
 ```c
 board[index] = player;
+
 ```
 
 This overrides the `computer` variable with `'X'`. After this, the computer puts `'X'` on the board. Since the player is also `'X'`, `winner == player` is now true!

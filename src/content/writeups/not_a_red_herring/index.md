@@ -11,8 +11,6 @@ description: |
 tags: ["rev"]
 ---
 
-# Not a Red Herring — sillyctf-2 (rev)
-
 —
 I promise it's not [https://shorturl.at/pZEPE](https://shorturl.at/pZEPE)
 

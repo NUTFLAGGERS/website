@@ -7,12 +7,10 @@ author: ""
 score: ""
 description: |
   > Dug around the archives and found a floppy disk containing a long-forgotten LA CTF challenge. Perhaps you may be the first to solve it in decades.
-  > 
+  >
   > Flag Format: `lactf{}`
 tags: ["rev"]
 ---
-
-# lactf-1986 — LA CTF Writeup
 
 - **Challenge:** lactf-1986
 - **Category:** Reverse Engineering
@@ -21,7 +19,6 @@ tags: ["rev"]
 
 ---
 
-# LaCTF 1986 — Solution Walkthrough
 
 This document is a step-by-step guide for solving the challenge using Ghidra. Follow in order; use the checkboxes to track progress.
 
@@ -37,19 +34,19 @@ The main flag-checking logic lives in **FUN_1000_00b0** (and any functions it ca
 
 ### 3.2 What FUN_1000_00b0 does
 
-1. **Copy 73 bytes from the binary into a local buffer**  
+1. **Copy 73 bytes from the binary into a local buffer**
    At **1000:00c6** `MOV CX, 0x24` (36), then **1000:00d0** `MOV SI, 0x146`, **1000:00d3** `REP MOVSW` (36 words = 72 bytes), then **1000:00d5** `MOVSB` (1 byte). So **73 bytes** are copied from DS:**0x146** into **local_a0**. This is the **target** (expected XOR result).
 
-2. **Read user input into local_ea**  
+2. **Read user input into local_ea**
    Helper functions (e.g. **FUN_1000_021f**, **FUN_1000_027e**) fill **local_ea** with the user's input (from file or keyboard); **1000:0101** null-terminates at the read length. So **local_ea** is the **input buffer**.
 
-3. **Check the prefix "lactf{"**  
+3. **Check the prefix "lactf{"**
    The code compares (listing): `local_ea[0]==0x6c` ('l'), `local_e9==0x61` ('a'), `local_e8==0x63` ('c'), `local_e7==0x74` ('t'), `local_e6==0x66` ('f'), `local_e5==0x7b` ('{'). So the required prefix is **`lactf{`**.
 
-4. **Initial state for the key stream**  
+4. **Initial state for the key stream**
    **1000:0164–0167** `LEA AX, local_ea` then `CALL FUN_1000_0010`. **1000:016a–016d** store the result (AX, DX) at **0x346** and **0x348**. So the key stream is seeded by **FUN_1000_0010(pointer to input)** — a hash of the null-terminated input. The loop index at **0x144** is set to 0.
 
-5. **XOR check (main validation)**  
+5. **XOR check (main validation)**
    For each index **i** from 0 to 72 (loop runs while **SI < 0x49**, i.e. 73 iterations):
    - **1000:0182–0185** Load state from **[0x346]** and **[0x348]** (AX, DX).
    - **1000:0189** `CALL FUN_1000_007b` → new state in AX, DX.
@@ -58,14 +55,14 @@ The main flag-checking logic lives in **FUN_1000_00b0** (and any functions it ca
    - **1000:01a0** `AL ^= input[i]`.
    - **1000:01a6** `CMP AL, local_a0[i]` — requires **key_byte ^ input[i] == target[i]**.
 
-   So the **correct** input byte at position **i** is:  
-   **input[i] = key_stream[i] ^ target[i]**,  
+   So the **correct** input byte at position **i** is:
+   **input[i] = key_stream[i] ^ target[i]**,
    where **target** = 73 bytes at DS:**0x146** (1239:0146–018e), and **key_stream[i]** = low byte of the state at 0x346 **after** the i‑th call to **FUN_1000_007b()**.
 
 ### 3.3 Summary formula
 
 - **Flag format:** `lactf{` + 73 bytes of checked input (bytes 0..72). Trim at first `}` or null for the actual flag string.
-- **For i = 0..72:**  
+- **For i = 0..72:**
   **input[i] = key_stream[i] ^ target[i]**
   - **target[i]** = byte at **1239:0146 + i** (73 bytes: 1239:0146 through 1239:018e).
   - **key_stream[i]** = low byte of state at 0x346 **after** the i‑th call to **FUN_1000_007b()**.
@@ -73,20 +70,20 @@ The main flag-checking logic lives in **FUN_1000_00b0** (and any functions it ca
 
 ### 3.4 Step-by-step: how to get the flag
 
-- [ ] **Step A: Dump the 73-byte target from the binary**  
+- [ ] **Step A: Dump the 73-byte target from the binary**
       In Ghidra go to **0x1239:0146** (or linear **0x124d6**). Copy **73 bytes** (1239:0146 through 1239:018e) → **target[0..72]**.
 
 - [ ] **Step B: Obtain the key stream (73 bytes from FUN_1000_007b)**
   - **Option B1:** Reimplement **FUN_1000_0010** and **FUN_1000_007b** (see “How to proceed” below), compute initial state then 73 key bytes.
   - **Option B2:** Run the binary in DOS, break after each **FUN_1000_007b** call in the loop, and record the byte at 0x346, 73 times (input must pass the "lactf{" check so the loop runs).
 
-- [ ] **Step C: Compute the flag bytes**  
+- [ ] **Step C: Compute the flag bytes**
       For **i = 0..72**: **flag_byte[i] = key_stream[i] ^ target[i]**.
 
-- [ ] **Step D: Build the flag**  
+- [ ] **Step D: Build the flag**
       **flag = "lactf{" + the 73 computed bytes (as characters).** Stop at the first `}` or null for the shortest flag.
 
-- [ ] **Step E: Submit**  
+- [ ] **Step E: Submit**
       The result is **lactf{...}**.
 
 ### 3.5 Optional: confirm the success path
@@ -116,11 +113,11 @@ Summary of what we did so far on the **lactf-1986** challenge (CHALL.EXE, 16-bit
 2. User input is read into **local_ea** (from file/keyboard via helpers); null-terminated at read length.
 3. **Prefix check:** first 6 bytes must be **`lactf{`**.
 4. **Initial state:** **FUN_1000_0010**(pointer to input) → (AX, DX) stored at 0x346, 0x348.
-5. **XOR check:** for `i = 0..72` (loop while SI < 0x49), the program calls **FUN_1000_007b()**, then uses the **low byte of the new state** at **0x346** as key_byte, and requires  
-   **key_byte ^ input[i] == target[i]**  
+5. **XOR check:** for `i = 0..72` (loop while SI < 0x49), the program calls **FUN_1000_007b()**, then uses the **low byte of the new state** at **0x346** as key_byte, and requires
+   **key_byte ^ input[i] == target[i]**
    So: **correct input[i] = key_stream[i] ^ target[i]**.
 
-**Formula:**  
+**Formula:**
 `flag = "lactf{" + (key_stream[i] ^ target[i]) for i in 0..72`
 
 - **target** = 73 bytes at **1239:0146–018e**.
@@ -130,25 +127,25 @@ Summary of what we did so far on the **lactf-1986** challenge (CHALL.EXE, 16-bit
 
 The code copies 73 bytes (36 words + 1 byte) from address **0x146**, but in 16-bit DOS that is an **offset**; the **segment** is implied (usually DS). Here’s how we found the correct segment.
 
-1. **Use the listing for FUN_1000_00b0**  
+1. **Use the listing for FUN_1000_00b0**
    At the top it says **`assume CS = 0x1000`**, so we first assumed the data might be in the same segment.
 
-2. **Go To 0x1000:0146 (or linear 0x10146)**  
+2. **Go To 0x1000:0146 (or linear 0x10146)**
    In Ghidra: **Navigation → Go To** and enter **0x10146** or **1000:0146**.
 
-3. **What we saw there**  
+3. **What we saw there**
    The Listing showed **code**, not data:
    - `1000:0145  MOV AX, 0x1`
-   - `1000:0148  JMP LAB_1000_014c`  
+   - `1000:0148  JMP LAB_1000_014c`
      So 0x146 in segment **0x1000** is in the middle of a `MOV` instruction, not the target table.
 
-4. **Conclusion**  
+4. **Conclusion**
    The offset **0x146** is used with the **data segment (DS)**, not the code segment (CS). Other globals in the decompilation are named like **DAT_1239_02b4** — the **0x1239** is the segment for that data.
 
-5. **Try the data segment 0x1239**  
+5. **Try the data segment 0x1239**
    **Go To** → **0x1239:0146** (or linear **0x124d6** = 0x1239×16 + 0x146).
 
-6. **Result**  
+6. **Result**
    At **1239:0146** we see raw bytes (e.g. `b6 8c 95 8f ...`) with no instruction pattern. The 73-byte target runs from **1239:0146** through **1239:018e** (inclusive).
 
 So: **0x146** in the source means **DS:0x146**; in this binary **DS = 0x1239** for that data, so the target is at **1239:0146**.
@@ -170,6 +167,7 @@ target = [
     0xad, 0xdf, 0x29, 0x5d, 0x72, 0xfc, 0x24, 0x90,
     0x2c
 ]
+
 ```
 
 ## Next: Step B (key stream)

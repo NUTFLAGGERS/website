@@ -10,8 +10,6 @@ description: |
 tags: ["forensics"]
 ---
 
-# for/Easy (Forensics)
-
 ## 1. Challenge summary
 
 > The Matrix is everywhere. It is all around us. Even now, in this very room.
@@ -27,6 +25,6 @@ View it in 3dviewer.net
 
 Turn to a specific position in the orthographic camera mode
 
-![image.png](image.png)
+![- Screenshot](image.png)
 
-![image.png](image_1.png)
+![- Screenshot](image_1.png)

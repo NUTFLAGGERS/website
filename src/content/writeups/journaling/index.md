@@ -12,8 +12,6 @@ description: |
 tags: ["for"]
 ---
 
-# journaling — texsaw-2026 (for)
-
 Found these two segments
 flagsegment_3fd19982505363d0
 flagsegment_u5njOurn@l

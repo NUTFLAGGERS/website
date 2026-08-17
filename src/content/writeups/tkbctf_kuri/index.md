@@ -11,8 +11,6 @@ description: |
 tags: ["pwn"]
 ---
 
-# stack, bof, pyfsb — tkbctf Writeup
-
 - **Challenge:** stack, bof, pyfsb
 - **Category:** pwn
 

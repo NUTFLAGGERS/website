@@ -12,10 +12,8 @@ description: |
 tags: ["web"]
 ---
 
-# the-trial — lactf-26 (web)
-
 Burpsuite Intercepted request (aft pressing submit) -> Sent to repeater -> Changed to flag
 
 lactf{gregor_samsa_awoke_from_wait_thats_the_wrong_book}
-![Reference](./image_1.png)
-![Reference](./image.png)
+![Reference Screenshot](./image_1.png)
+![Reference Screenshot](./image.png)

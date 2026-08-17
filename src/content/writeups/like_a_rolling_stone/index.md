@@ -10,7 +10,5 @@ description: |
 tags: ["stego"]
 ---
 
-# Like A Rolling Stone — sillyctf-2 (stego)
-
 and a wav file...
-![image.png](image.png)
+![Like a rolling stone - Screenshot](image.png)

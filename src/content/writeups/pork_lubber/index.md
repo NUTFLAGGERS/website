@@ -11,8 +11,6 @@ description: |
 tags: ["misc"]
 ---
 
-# pork lubber — ritsec-ctf (misc)
-
 1. Look up [https://rdap.arin.net/registry/ip/44.30.122.69](https://rdap.arin.net/registry/ip/44.30.122.69)
 2. See that Org address (RDAP) is 5663 Balboa Ave Suite 432, San Diego, CA 92111-2705 and happily try CA as the state
 3. Find out it is wrong and look up [https://ipinfo.io/44.30.122.69](https://ipinfo.io/44.30.122.69) instead

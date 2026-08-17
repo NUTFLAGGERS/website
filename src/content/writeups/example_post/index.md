@@ -9,14 +9,12 @@ description: "An example CTF writeup post demonstrating technical analysis, solu
 tags: ["web", "pwn"]
 ---
 
-# Example Writeup / CTF Challenge Solution
-
 An example CTF challenge writeup / post template demonstrating technical breakdown, vulnerability root-cause analysis, exploit payload construction, and flag retrieval.
 
 ## Overview
 
-> **Target**: `http://challenge.example.com:8080`  
-> **Category**: Web / Pwn  
+> **Target**: `http://challenge.example.com:8080`
+> **Category**: Web / Pwn
 > **Difficulty**: Medium
 
 This challenge simulates a real-world web API service backed by a C native binary plugin. The service contained both a template injection vulnerability and an unauthenticated heap corruption primitive.
@@ -33,6 +31,7 @@ def render_template():
     user_name = request.json.get('name', 'guest')
     template = f"<h1>Hello {user_name}</h1>"
     return render_template_string(template)
+
 ```
 
 Because `render_template_string` formats `user_name` directly into the Jinja2 template string before compiling, arbitrary template expressions can be evaluated.
@@ -43,7 +42,7 @@ Because `render_template_string` formats `user_name` directly into the Jinja2 te
 2. **Flag Retrieval**: Execute shell command `cat /flag.txt` to capture the flag.
 
 ```python
-# Solve script payload
+
 import requests
 
 TARGET_URL = "http://challenge.example.com:8080/render"
@@ -56,6 +55,7 @@ def solve():
 
 if __name__ == "__main__":
     solve()
+
 ```
 
 ## Flag & Key Takeaways

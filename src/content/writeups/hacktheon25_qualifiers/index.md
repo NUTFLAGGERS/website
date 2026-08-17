@@ -10,6 +10,4 @@ description: |
 tags: []
 ---
 
-# hacktheon25-qualifiers
-
 HackTheOn Sejong 2026_write-up_Form.docx.pdf

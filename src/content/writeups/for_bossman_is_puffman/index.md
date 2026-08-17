@@ -10,13 +10,11 @@ description: |
 tags: ["for"]
 ---
 
-# bossman is puffman — sillyctf-2 (for)
-
-![sike.png](./sike.png)
+![For bossman is puffman - sike Screenshot](./sike.png)
 mp3 file
 
 on audacity you see this
-![image.png](image.png)
+![For bossman is puffman - Screenshot](image.png)
 
 long bar = right, short bar = left
 

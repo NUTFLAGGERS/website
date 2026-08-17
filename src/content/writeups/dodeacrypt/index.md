@@ -11,8 +11,6 @@ description: |
 tags: ["crypto"]
 ---
 
-# dodecacrypt — bsides-ctf (crypto)
-
 There is a total of 120 possible keys
 
 You just had to rearrange the key to form
@@ -23,6 +21,8 @@ and you'll get the flag
 
 HI_IM_SYMMETRIC_AND_THIS_IS_YOUR_FLAG
 
-solution code.py
-Solution3.py
-![image.png](./image.png)
+Solution files:
+- `solution code.py`
+- `Solution3.py`
+
+![Dodecacrypt key generation and solution output Screenshot](./image.png)

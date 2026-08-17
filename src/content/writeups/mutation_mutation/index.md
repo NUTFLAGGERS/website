@@ -7,14 +7,12 @@ author: "LevelOP"
 score: ""
 description: |
   > It's a free flag! You just gotta inspect the page to get it. Just be quick though... the flag is constantly mutating. Can you catch it before it changes?
-  > 
+  >
   > mutation-mutation.chall.lac.tf
-  > 
+  >
   > Flag Format: `lactf{}`
 tags: ["web", "javascript", "dom"]
 ---
-
-# mutation-mutation — lactf-26 Writeup
 
 - **Challenge:** mutation-mutation
 - **Category:** Web
@@ -32,8 +30,8 @@ The description heavily implies that the flag is present in the DOM but is activ
 
 ---
 
-![image.png](image.png)
-![image.png](image_1.png)
+![Mutation mutation - Screenshot](image.png)
+![Mutation mutation - Screenshot](image_1.png)
 
 - **Flag:** `lactf{с0nѕtаnt_mutаtі0n_1sfun!ІlІ1| ض픋ԡೇ∑ᦞ୞땾᥉༂↗ۑீ᤼യ⌃±❣Ӣ◼ௌௌௌௌௌ}`
 

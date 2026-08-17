@@ -10,8 +10,6 @@ description: |
 tags: ["web"]
 ---
 
-# Going Back In Time — sillyctf-2 (web)
-
 Time travel! But not really...[https://goingbackintime.sillyctf.psuccso.org/](https://goingbackintime.sillyctf.psuccso.org/)
 
 [https://goingbackintime.sillyctf.psuccso.org/2000/1999/1998/1997/1996/1995/1994/1993/1992/1991/1990/](https://goingbackintime.sillyctf.psuccso.org/2000/1999/1998/1997/1996/1995/1994/1993/1992/1991/1990/)

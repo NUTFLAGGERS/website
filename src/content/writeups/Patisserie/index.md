@@ -11,8 +11,6 @@ description: |
 tags: ["web", "cookie-smuggling"]
 ---
 
-# Patisserie — tkbctf Writeup
-
 - **Challenge:** Patisserie
 - **Category:** Web
 - **Flag:** `tkbctf{qu0t3d_c00k13_smuggl1ng_p4rs3r_d1ff_7d3f8a2b}`
@@ -41,7 +39,8 @@ ${nav("Admin")}
 </body></html>`);
   }
 ...
-```
+
+```bash
 
 so the goal is quite clear we just need to have a cookie with the property `is_admin=1`
 
@@ -67,7 +66,8 @@ services:
       - FLAG=tkbctf{dummy}
       - COOKIE_SECRET=<REDACTED>
       - ADMIN_PASSWORD=<REDACTED>
-```
+
+```bash
 
 From this we can see that your traffic is first routed to the proxy service with PORT environment variable or if it is not given it will be routed from port `3000` to port `8080`. Note that this port is the external port and not the internal port used by docker. After being routed into port `8080` in docker the traffic is then routed to app service port `3000` inside docker.
 
@@ -117,6 +117,7 @@ def gateway(path):
 
     conn.close()
     return Response(resp_body, status=resp_status, headers=headers)
+
 ```
 
 Looking into the `check_cookies` function we find the following.
@@ -139,6 +140,7 @@ def check_cookies(cookie_header: str) -> str | None:
             return "blocked cookie"
 
     return None
+
 ```
 
 If you look at the last few lines you can see that it explicity checks if the cookies name contain admin. So the cookie `is_admin` which we need to set will not be accepted by the flask application. So what do we do next?
@@ -147,7 +149,9 @@ Well, we can look further into how cookies are actually processed.
 Typically when you send a request with multiple cookies if you look at the devtools you will see something like this where the cookies are separated by semi colons.
 
 ```
+
 Cookie: a=123;b=456;c=789
+
 ```
 
 But lets see how it is processed by this flask application.
@@ -161,6 +165,7 @@ def parse_cookie_header(raw: str) -> dict[str, str]:
     except Exception:
         return {}
     return {key: morsel.value for key, morsel in sc.items()}
+
 ```
 
 It gets processed by a SimpleCookie object with the load method. Looking deeper into the load method we find
@@ -175,10 +180,11 @@ def load(self, rawdata):
         if isinstance(rawdata, str):
             self.__parse_string(rawdata)
         else:
-            # self.update() wouldn't call our custom __setitem__
+
             for key, value in rawdata.items():
                 self[key] = value
         return
+
 ```
 
 deeper still we get to the `__parse_string` private method where we can see how the cookie string is processed. Since regex is a black magic I just ask AI what it is trying to match to get the key value pairs of the cookies.
@@ -265,6 +271,7 @@ def __parse_string(self, str, patt=_CookiePattern):
                 rval, cval = value
                 self.__set(key, rval, cval)
                 M = self[key]
+
 ```
 
 One thing from the AI that stood out to me was this
@@ -279,6 +286,7 @@ Double-Quoted Strings: "(?:[^\\"]|\\.)*"
 - \\. matches an escaped character (a backslash followed by any character).
 
 - This allows the value to contain literal quotes if they are escaped.
+
 ```
 
 I thought if it would be possible for the cookie `is_admin` to be stored in values instead of key since previously we have already seen cookie name cannot contain admin. So working off this I tried this the payload is as follows.
@@ -295,6 +303,7 @@ so the is admin cookie will not be detected by this part of the check_cookies fu
 for name in cookies:
     if "admin" in name.lower():
         return "blocked cookie"
+
 ```
 
 Now our cookie will be passed into the express server as such
@@ -307,6 +316,7 @@ Express uses this concept of middlewares where each requests goes through these 
 const app = express();
 app.use(cookieParser(COOKIE_SECRET));
 app.use(express.urlencoded({ extended: false }));
+
 ```
 
 going into the github repo of cookie-parser we find this
@@ -330,6 +340,7 @@ function cookieParser (req, res, next) {
 
     req.cookies = cookie.parse(cookies, options)
 ...
+
 ```
 
 going deeper into the cookie package to find `cookie.parse` we can find a difference in the way cookies are parsed. It seems like now in the express backend, the cookies are parsed based on `;` semicolons instead of including double quoted strings.
@@ -371,6 +382,7 @@ export function parseCookie(str: string, options?: ParseOptions): Cookies {
 }
 ...
 export { stringifySetCookie as serialize, parseCookie as parse };
+
 ```
 
 So our original cookie
@@ -384,6 +396,7 @@ now turns into this json object
   "test": "\"1",
   "is_admin": "1"
 }
+
 ```
 
 So since we now have the correct cookie we can go back to the admin endpoint to view the `/admin` route
@@ -393,7 +406,8 @@ app.get("/admin", (req, res) => {
   if (req.cookies.is_admin === "1") {
     return res.send(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Admin - Patisserie</title>${PAGE_STYLE}</head>
 ...
-```
+
+```bash
 
 Using a simple curl command with the cookie we built we can find the flag `tkbctf{qu0t3d_c00k13_smuggl1ng_p4rs3r_d1ff_7d3f8a2b}`
 
@@ -403,6 +417,7 @@ curl -H 'Cookie: test="1;is_admin=1;"' http://35.194.108.145:29214/admin | grep 
                                  Dload  Upload   Total   Spent    Left  Speed
 100  3548  100  3548    0     0  19982      0 --:--:-- --:--:-- --:--:-- 20045
     <p>tkbctf{qu0t3d_c00k13_smuggl1ng_p4rs3r_d1ff_7d3f8a2b}</p>
+
 ```
 
 The lesson here is that if you are planning to use different parsers ensure they have basically identical implementations and don't parse the same thing string differently.
@@ -414,4 +429,5 @@ patisserie.tar.gz
 app/index.js
 compose.yml
 proxy/app.py
+
 ```

@@ -12,17 +12,15 @@ description: |
 tags: ["crypto"]
 ---
 
-# smol cats — lactf-26 (crypto)
-
-![image.png](image.png)
+![Smoll cats - Screenshot](image.png)
 
 lactf{sm0l_pr1m3s_4r3_n0t_s3cur3}
 
-![image.png](image_1.png)
+![Smoll cats - Screenshot](image_1.png)
 
 Terminal output:
 
-```
+```bash
 proof of work:
 curl -sSfL https://pwn.red/pow | sh -s s.AAA6mA==.Dt3sJFuBAX7YO4gsKDVTig==
 solution: s.f+3zeHXexWEpay/gt6CYCyJUJzhy1qkCPVWrLcxv51SC87Uf0GLzUXo8jtyK7I50mcN1DvnyQowXWsYwO6Gwqb6yjykPE/2Rp9J/GNvkIYcMpQMTH7xS4pSc1fYewD1i0i2D6aulfNG0SfTG/OHYocyT3rT+DppMAq4CuTIOzUQuwRFV9+H8xaaUwGRZsuLmI0IF76r8E557p/yCE1GZSw==
@@ -39,6 +37,7 @@ e = 65537
 c = 416328151395027680566349936881408333050402980480268361321216mrrrow? How many treats do I want? 540488950358328632426884249065550069626409123190918240775460PURRRRRR You got it right! You may pet me now.
 Here's your reward, human:
 lactf{sm0l_pr1m3s_4r3_n0t_s3cur3}
+
 ```
 
 Solution:
@@ -57,6 +56,7 @@ sage: d
 sage: m = power_mod(c, d, n)
 sage: m
 540488950358328632426884249065550069626409123190918240775460
+
 ```
 
 The main thing is that whenever u use a n that is small enough (200 bits in this case) you can use tools like sage (there are other means to do it mathematically)

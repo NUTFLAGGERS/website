@@ -10,16 +10,14 @@ description: |
 tags: ["osint"]
 ---
 
-# summer_trip — texsaw-2026 (osint)
-
-![image.png](./image.png)
+![Summer trip - Screenshot](./image.png)
 
 From this it says Tokyo Metropolitan something
-![Summer_Trip.jpeg](./Summer_Trip.png)
+![. Screenshot](./Summer_Trip.png)
 
 Then searching the top roast beef place
 
 And the nearby exchange machine
-![image_2.png](./image_2.png)
+![Summer trip - Screenshot](./image_2.png)
 
 give the currency exchange coords can liao

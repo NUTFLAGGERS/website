@@ -11,8 +11,6 @@ description: |
 tags: []
 ---
 
-# readmepdf — tkbctf5 Writeup
-
 - **Challenge:** readmepdf
 
 ---

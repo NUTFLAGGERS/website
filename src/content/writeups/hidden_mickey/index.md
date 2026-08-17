@@ -10,8 +10,6 @@ description: |
 tags: ["osint"]
 ---
 
-# Hidden Mickey — sillyctf-2 (osint)
-
 —
 5 (100% liked) 0
 Hiya, pals! I have hidden a mickey face around one of the Disney parks. Find out which ride it is located at. Format the flag as sillyCTF{the_name_of_the_ride}[https://shorturl.at/VUtY4](https://shorturl.at/VUtY4)

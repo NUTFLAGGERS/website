@@ -10,15 +10,13 @@ description: |
 tags: ["for"]
 ---
 
-# image-progress — bsides-ctf (for)
-
 [https://opensource.googleblog.com/2021/09/using-saliency-in-progressive-jpeg-xl-images.html](https://opensource.googleblog.com/2021/09/using-saliency-in-progressive-jpeg-xl-images.html)
 
 Google Open Source Blog
 Using Saliency in progressive JPEG XL images
 At Google, we are working towards improving the web experience for users. Getting images delivered fast is a crucial part of the web experience and
 
-Image[https://github.com/libjxl/libjxl](https://github.com/libjxl/libjxl)
+Image [https://github.com/libjxl/libjxl](https://github.com/libjxl/libjxl)
 
 GitHub - libjxl/libjxl: JPEG XL image format reference implementation
 JPEG XL image format reference implementation. Contribute to libjxl/libjxl development by creating an account on GitHub.
@@ -31,6 +29,6 @@ my guess is the order will output the flag with the ASCII characters
 
 I built the image layer by layer and use arrow keys to see what letters were highlighted
 
-![before.png](before.png)
+![Before. Screenshot](before.png)
 
-![after.png](after.png)
+![After. Screenshot](after.png)

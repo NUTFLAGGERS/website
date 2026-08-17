@@ -10,14 +10,12 @@ description: |
 tags: ["rev"]
 ---
 
-# ooo — lactf-26 (rev)
-
 ooo.py
 
 Inspecting the code, its those cancer things where u have to know what character as they look similar but have different unicode
 
 Reference: [https://gist.github.com/StevenACoffman/a5f6f682d94e38ed804182dc2693ed4b](https://gist.github.com/StevenACoffman/a5f6f682d94e38ed804182dc2693ed4b)
-![image.png](image.png)
+![- Screenshot](image.png)
 
 Simplifies to:
 index = ö XOR ((ord(c1)ord(c2)) % ord(c1)) = ö XOR 0 = ö (since (ab) % a = 0 for a != 0
@@ -38,7 +36,6 @@ Repeat and lookup (can probably python this)
 
 lactf{gоοօỏơóὀόὸὁὃὄὂȯöd_j0b}
 
-# LaCTF Rev 1
 
 ## Step 1
 
@@ -66,6 +63,7 @@ Since it's Python, we look at the next couple lines to see what they do
 if (len(guess) < len(ὁ)):
     print("That's too short :(")
     exit()
+
 ```
 
 We can see that this is just a check for how long the guessed string is (which is 27 characters)
@@ -73,6 +71,7 @@ We can see that this is just a check for how long the guessed string is (which i
 ```Python
 for ö in range(len(ὁ)-1):
 for i in range(len(targets) - 1): // In human readable format
+
 ```
 
 I did not know any unicode character could be a loop counter but the more you know ig
@@ -84,6 +83,7 @@ I did not know any unicode character could be a loop counter but the more you kn
     // Human readable format
     curr = ord(guess[i])
     nxt = ord(guess[i + 1])
+
 ```
 
 This returns the unicode character number of two consecutive numbers in `guess`
@@ -92,6 +92,7 @@ This returns the unicode character number of two consecutive numbers in `guess`
 
 ```Python
     if (о(ὄ(ό,ὃ),ὂ(ό,ὃ)) != ὁ[ơ(ö,ȯ(օ(ό,ὃ),ό))]):
+
 ```
 
 This is the complicated portion. We need to simplify this expression to figure out what it means. Let's look at each side:
@@ -110,6 +111,7 @@ Hence:
 о(ὄ(ό,ὃ), ὂ(ό,ὃ)) = о(ό, ὃ)
                   = ό + ὃ
                   = ord(guess[ö]) + ord(guess[ö+1])
+
 ```
 
 Which is the sum of 2 consecutive character codes
@@ -131,6 +133,7 @@ Hence:
 օ(ό,ὃ) = ό * ὃ
 ȯ(օ(ό,ὃ), ό) = ȯ(ό*ὃ, ό)
              = (ό * ὃ) % ό
+
 ```
 
 We observe that (a * b) % a is 0 (unless a =/= 0), so `ȯ(օ(ό,ὃ), ό) = 0`
@@ -140,6 +143,7 @@ Solving the outermost function:
 ```Python
 ơ(ö, ȯ(օ(ό,ὃ), ό)) = ơ(ö, 0)
                    = ö
+
 ```
 
 Translating the entire snippet into something human readable:
@@ -148,6 +152,7 @@ Translating the entire snippet into something human readable:
 if add(first(curr, nxt), second(curr, nxt)) != targets[xor(i, mod(mul(curr, nxt), curr))]:
 
 if (curr + nxt) != targets[i]: // Simplified further
+
 ```
 
 ## Step 4

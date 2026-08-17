@@ -14,8 +14,6 @@ description: |
 tags: ["misc", "ml"]
 ---
 
-# CDDC2026 — Activation Image Challenge (misc)
-
 **Flag:** `CDDC2026{perfect_activation_run}`
 
 **Service:** `nc cddc2026.xyz 1339`
@@ -49,8 +47,10 @@ So the task is **not** image recognition. It is: _given the numeric fingerprint 
 Connecting shows a line-based JSON protocol:
 
 ```
+
 === Activation Image Challenge (TCP) ===
 Commands: HELP | INFO | QUERY | ANSWER <activation> | QUIT
+
 ```
 
 `HELP` documents the four commands:
@@ -66,6 +66,7 @@ The `welcome` / `INFO` payload:
 {"type":"round_info","round_id":1,"symbol":"b","queries_used":0,"queries_left":3,
  "activation_candidates":["relu","leaky_relu","sigmoid","tanh","softplus"],
  "image_ascii":[...], "image_png_base64":"..."}
+
 ```
 
 So the answer space is exactly **5 candidates**: `relu, leaky_relu, sigmoid, tanh, softplus`.
@@ -80,6 +81,7 @@ Crucially, `INFO` does **not** include the model output — only `QUERY` does. T
  "logits":[0.0265, 0.0458, -0.0311, ...],            // 15 class logits
  "feature_summary":{"mean":0.00742,"std":0.054938,
                     "min":-0.113258,"max":0.145324,"positive_ratio":0.539062}}
+
 ```
 
 The `top3`/`logits` are near-uniform noise (a random-weight CNN) — useless for reading the _symbol_, consistent with "the image is only a trigger." The gold is `feature_summary`: summary statistics of the **post-activation feature map**. An activation function is, by definition, a transform of a distribution — so its identity is written all over these stats.
@@ -127,6 +129,7 @@ def classify(fs):
     if mn > -0.05:                      # negatives compressed (alpha*x)
         return 'leaky_relu'
     return 'tanh'                       # symmetric, strong negatives
+
 ```
 
 ---
@@ -175,6 +178,7 @@ def main():
             print(resp.decode()); return        # flag is inside final_summary
         if b'game_over' in resp:                 # only reached on a wrong guess
             print('LOST:', resp.decode()); return
+
 ```
 
 ### Result
@@ -186,6 +190,7 @@ All 50 rounds classified correctly on the first full run:
  "answered_rounds":50,"correct_count":50,"accuracy":1.0,"perfect":true,
  "history":[ ... 50× {"correct":true} ... ],
  "flag":"CDDC2026{perfect_activation_run}"}
+
 ```
 
 **Flag:** `CDDC2026{perfect_activation_run}`

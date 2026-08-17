@@ -13,8 +13,6 @@ description: |
 tags: ["misc"]
 ---
 
-# Pirate's Lost Log — ritsec-ctf (Misc)
-
 Script to run dig commands. walks through subdomains starting from CURRENT. first read the TXT record to get the log fragment and check its length. next, read the NSEC record to find out which subdomain to query next.
 [walker.py](./walker.py)
 the longest string is 142 chars n is the flag: thebartentersawcaptainjackwalkintothebarwiththeshipswheelaroundhisnutsthebartenderaskedhimwhatwasgoingoncaptainjackrepliedyaaritsdrivingmenuts

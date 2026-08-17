@@ -13,13 +13,11 @@ description: |
 tags: ["osint"]
 ---
 
-# oh my god, they killed kenny! — sillyctf-2 (osint)
-
 Fairplay, Colorado inspired South Park (there's a real basin named South Park)
 
-There's literally also a South Park City museum there[https://www.tripadvisor.com/Attractions-g33416-Activities-c49-Fairplay_Colorado.html](https://www.tripadvisor.com/Attractions-g33416-Activities-c49-Fairplay_Colorado.html)
+There's literally also a South Park City museum there [https://www.tripadvisor.com/Attractions-g33416-Activities-c49-Fairplay_Colorado.html](https://www.tripadvisor.com/Attractions-g33416-Activities-c49-Fairplay_Colorado.html)
 
-The locomotive on display is a 1914 Porter (Company) Mogul (2-6-0 wheel arrangement) Locomotive[https://www.reddit.com/r/cyanotypes/comments/1fjltt3/1914_porter_mogul_locomotive_south_park_city/](https://www.reddit.com/r/cyanotypes/comments/1fjltt3/1914_porter_mogul_locomotive_south_park_city/)
+The locomotive on display is a 1914 Porter (Company) Mogul (2-6-0 wheel arrangement) Locomotive [https://www.reddit.com/r/cyanotypes/comments/1fjltt3/1914_porter_mogul_locomotive_south_park_city/](https://www.reddit.com/r/cyanotypes/comments/1fjltt3/1914_porter_mogul_locomotive_south_park_city/)
 
 [https://en.wikipedia.org/wiki/Denver,_South_Park_and_Pacific_Railroad](https://en.wikipedia.org/wiki/Denver,_South_Park_and_Pacific_Railroad)
 And hence this should be the railroad

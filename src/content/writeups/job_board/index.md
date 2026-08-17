@@ -9,8 +9,6 @@ description: ""
 tags: ["web"]
 ---
 
-# job-board — lactf-26 (web)
-
 Includes both the admin-job.js file and the job-portal source code
 ob-board.7z
 
@@ -35,6 +33,7 @@ function htmlEscape(s, quote = true) {
   }
   return s;
 }
+
 ```
 
 BUT it can be bypassed as it only looks for ONE instance.
@@ -51,16 +50,17 @@ xhr.withCredentials = true; //this part is VERY important because of the fact th
 xhr.send();
 </script>
 <p>
+
 ```
 
 Real nice data derived (document.cookie is in base64):
-![image.png](./image.png)
+![Job board - Screenshot](./image.png)
 
-![image.png](./image_2.png)
+![Job board - Screenshot](./image_2.png)
 
 Take this session value and assign it onto the web browser developer console
-![image.png](./image_3.png)
+![Job board - Screenshot](./image_3.png)
 
 Refresh the page and you should see the job 'Flag Haver'
 
-![image.png](./image_4.png)
+![Job board - Screenshot](./image_4.png)

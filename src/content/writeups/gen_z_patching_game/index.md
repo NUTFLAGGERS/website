@@ -13,6 +13,4 @@ description: |
 tags: ["rev"]
 ---
 
-# Gen_Z_P'Batching_Game — snyk-fetchtheflag-ctf (rev)
-
 Refer to artifacts attached

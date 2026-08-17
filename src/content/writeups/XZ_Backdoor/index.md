@@ -10,12 +10,10 @@ description: |
   > discovered suspicious modifications to the build system. The changes closely resemble
   > the techniques used in the XZ Utils compromise (CVE-2024-3094)... Trace the attack chain,
   > extract the hidden payload, and recover the secret.
-  > 
+  >
   > Flag Format: `CDDC2026{}`
 tags: ["reversing", "forensics"]
 ---
-
-# XZ Backdoor — CDDC2026 (Reversing / Forensics, 370–390 pts)
 
 **Flag:** `CDDC2026{1func_r3s0lv3r_h1j4ck_jia_tan_w4s_h3r3}`
 
@@ -31,9 +29,11 @@ tags: ["reversing", "forensics"]
 Files provided (in `chal.zip`):
 
 ```
+
 challenge/build-to-host.m4          <- modified autotools macro (entry point)
 challenge/tests/files/*.xz          <- 5 "test fixture" compression samples
 challenge/README.txt
+
 ```
 
 This is a faithful re-creation of the real **xz-utils backdoor (CVE-2024-3094 / "Jia Tan")**:
@@ -56,6 +56,7 @@ from files that masquerade as corrupted compression test cases.
 ## 3. Attack chain
 
 ```
+
 build-to-host.m4
    │  grep -aErls "####[alnum]{5}####"  tests/files/
    ▼
@@ -70,6 +71,7 @@ backdoor.o               (ELF x86-64 relocatable object, GCC 13.4.0)
    • _bd_enc_flag      (80 B)  = IV(16) ‖ AES-256-CBC ciphertext(64)
    • _bd_enc_aes_key   (256 B) = RSA-encrypted AES key
    • _bd_rsa_n         (256 B) = RSA-2048 modulus  ← weak!
+
 ```
 
 ### 3.1 Stage 0 — the malicious macro
@@ -83,16 +85,18 @@ gl_am_configmake=`grep -aErls "#{4}[[:alnum:]]{5}#{4}" $srcdir/tests/files/ 2>/d
 tail -n +2 "$gl_localedir_data" 2>/dev/null | xz -dc 2>/dev/null > "$gl_localedir_tmp"
 chmod +x "$gl_localedir_tmp"
 . "$gl_localedir_tmp" "$gl_cv_host_obj"      # source stage-1, passing an output path
+
 ```
 
 Reproduced manually:
 
 ```bash
 grep -aErls "#{4}[[:alnum:]]{5}#{4}" tests/files/
-#  -> tests/files/bad-3-corrupt_lzma2.xz
+
 grep -aEro "#{4}[[:alnum:]]{5}#{4}" tests/files/bad-3-corrupt_lzma2.xz
 #  -> ####bkd0r####
 tail -n +2 tests/files/bad-3-corrupt_lzma2.xz | xz -dc > stage1.sh
+
 ```
 
 ### 3.2 Stage 1 — shell dropper
@@ -103,6 +107,7 @@ tail -n +2 tests/files/bad-3-corrupt_lzma2.xz | xz -dc > stage1.sh
 export gl_path_map="$1"
 payload='f0VMRgIBAQM...'          # base64 of an ELF .o
 printf '%s' "$payload" | base64 -d > "$gl_path_map"
+
 ```
 
 Decoding the blob yields **`backdoor.o`** (6992 bytes, `ELF 64-bit relocatable`).
@@ -112,6 +117,7 @@ Decoding the blob yields **`backdoor.o`** (6992 bytes, `ELF 64-bit relocatable`)
 Symbol table (`_bd_*`) and string table make the intent obvious:
 
 ```
+
 _bd_hooked_rpd     hooked RSA_private_decrypt
 _bd_orig_rpd       saved original
 _bd_do_decrypt     flag-decryption routine
@@ -120,6 +126,7 @@ _bd_enc_aes_key    .rodata+96   (256 B)
 _bd_rsa_n          .rodata+352  (256 B)
 strings: RSA_private_decrypt, RSA_get0_key, BN_bn2bin, EVP_aes_256_cbc,
          EVP_DecryptInit_ex/Update/Final_ex, /proc/self/cmdline, /proc/self/comm
+
 ```
 
 It resolves OpenSSL functions via `dlsym` at runtime (GOT/IFUNC-style resolver hijack,
@@ -132,6 +139,7 @@ mirroring the real backdoor's `_bd_crc64_resolve`).
 Disassembling `_bd_do_decrypt` and resolving the relocations gives the exact data flow:
 
 ```
+
 RSA_private_decrypt(flen=256, from=_bd_enc_aes_key, to=buf, rsa=<conn key>, padding=3)
                                                                           ^ 3 = RSA_NO_PADDING
 key  = buf[224:256]          # last 32 bytes of the raw 256-byte RSA block
@@ -139,14 +147,17 @@ iv   = _bd_enc_flag[0:16]    # first 16 bytes of the flag blob ARE the IV
 ct   = _bd_enc_flag[16:80]   # remaining 64 bytes = AES-256-CBC ciphertext
 EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv)
 EVP_DecryptUpdate(...) ; EVP_DecryptFinal_ex(...)
+
 ```
 
 Reloc resolution that nailed the offsets:
 
 ```
+
 @364  from  -> .rodata+96   (_bd_enc_aes_key)
 @438  iv    -> .rodata+0    (_bd_enc_flag[0:16])
 @459  ct    -> .rodata+16   (_bd_enc_flag[16:])
+
 ```
 
 So the AES key is whatever the **server's RSA private key** produces from
@@ -162,6 +173,7 @@ so **Fermat factorization** succeeds in a handful of iterations — no need for 
 a = isqrt(n); a += (a*a < n)
 while not is_square(a*a - n): a += 1
 b = isqrt(a*a - n); p, q = a-b, a+b        # found almost immediately
+
 ```
 
 (yafu would also crack it instantly since it tries Fermat first, but plain Fermat is enough.)
@@ -198,13 +210,16 @@ iv, ct = ef[:16], ef[16:]
 pt = Cipher(algorithms.AES(key), modes.CBC(iv)).decryptor()
 flag = (pt.update(ct) + pt.finalize())
 print(flag)   # CDDC2026{1func_r3s0lv3r_h1j4ck_jia_tan_w4s_h3r3}  + PKCS7 \x10*16
+
 ```
 
 Output:
 
 ```
+
 AES key : 6b11e6e4f69969ed54e2dbf0da8df7ce90d32c9f7f862cc60b6d0aa984cbb27a
 plaintext: CDDC2026{1func_r3s0lv3r_h1j4ck_jia_tan_w4s_h3r3}\x10\x10...\x10
+
 ```
 
 Clean PKCS#7 padding (`\x10` × 16) confirms the key and flag are correct.
@@ -214,7 +229,9 @@ Clean PKCS#7 padding (`\x10` × 16) confirms the key and flag are correct.
 ## 6. Flag
 
 ```
+
 CDDC2026{1func_r3s0lv3r_h1j4ck_jia_tan_w4s_h3r3}
+
 ```
 
 The flag text itself nods to the technique (`1func_r3s0lv3r_h1j4ck` = the IFUNC resolver

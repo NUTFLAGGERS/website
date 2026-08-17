@@ -9,8 +9,6 @@ description: ""
 tags: ["web"]
 ---
 
-# lactf-invoice-generator — lactf-26 (web)
-
 dist.tar.gz
 
 - invoice generator takes in input (processed by puppeteer). did a quick google search on puppeteer vuln and SSRF came up
@@ -30,8 +28,9 @@ const server = http.createServer((req, res) => {
     res.end(`<div><strong>FLAG:</strong> ${FLAG}</div>`);
     return;
   }
+
 ```
 
 - just needed to inject the iframe in the "description" field.
-  ![Reference](./image.png)
-  ![Reference](./image_1.png)
+  ![Reference Screenshot](./image.png)
+  ![Reference Screenshot](./image_1.png)

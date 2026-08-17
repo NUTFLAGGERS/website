@@ -8,8 +8,8 @@ score: ""
 description: |
   > flag.zip is the 160-byte AES-256-CBC ciphertext (no PK header — it's encrypted).
   >
-  > Key insight: derive_wrap_key calls sha256_one(&src, sizeof(src), out) — it hashes &src (the address-of the local pointer, length sizeof(src)=8) instead of the net_secret contents. So the AES key is just SHA256( le64(&net_secret) ) — it depends only on the runtime KASLR-slid address of net_secret, nothing secret. Break KASLR → get the address → derive key → decrypt. 
-  > 
+  > Key insight: derive_wrap_key calls sha256_one(&src, sizeof(src), out) — it hashes &src (the address-of the local pointer, length sizeof(src)=8) instead of the net_secret contents. So the AES key is just SHA256( le64(&net_secret) ) — it depends only on the runtime KASLR-slid address of net_secret, nothing secret. Break KASLR → get the address → derive key → decrypt.
+  >
   > Flag Format: `CDDC2026{}`
 tags: ["pwn", "crypto"]
 ---
@@ -24,6 +24,7 @@ The challenge name (net_secret) and flag (r3f3r3nce_n0t_d3r3f3r3nce) both point 
 ```c
 const u8 src = (const u8)&net_secret;
 return sha256_one(&src, sizeof(src), out);   // hashes &src, not *src
+
 ```
 
 It hashes `&src` (the address of the local pointer, 8 bytes) instead of the 16 secret bytes of `net_secret`. So the "secret" AES-256 wrap key is just `SHA256(le64(&net_secret))` — it leaks zero entropy beyond the runtime address of `net_secret`, which is determined entirely by the KASLR slide.

@@ -13,8 +13,6 @@ description: |
 tags: ["misc"]
 ---
 
-# Cube Map — CDDC2026 Writeup
-
 - **Challenge:** Cube Map
 - **Category:** Misc
 - **Points:** 400 (decayed to ~330)
@@ -44,10 +42,12 @@ The download button linked a **Google Drive folder**, not a direct file — a sm
 ## 2. Recon — what's in the box
 
 ```
+
 chal.zip
 └── chal/
     ├── map1.png … map9.png     # nine ~2000×2000 puzzle images
     └── flag.txt.zip            # 48-byte flag, ENCRYPTED
+
 ```
 
 `flag.txt.zip` metadata:
@@ -64,9 +64,11 @@ Each `mapN.png` is titled `CUBE MAP - Puzzle N` and contains **nine 9×9 grids**
 The clue numbers are **not printed as digits** — each is a tiny **3×3 dot‑matrix glyph**, and the **number of lit dots = the clue value**:
 
 ```
+
 1 = single dot      4 = four corners     7 = ###/#.#/#.#
 2 = two corners     5 = X (corners+ctr)  8 = ###/#.#/### (hollow)
 3 = "/" diagonal    6 = #.#/#.#/#.#       9 = full 3×3 block
+
 ```
 
 A fully filled column (clue 9) shows up as a solid 3×3 block of dots, which is the giveaway that _count = value_.
@@ -108,7 +110,7 @@ Standard line‑solver: enumerate candidate fills per row/column, **constraint�
 ```python
 import zipfile
 zipfile.ZipFile('flag.txt.zip').read('flag.txt', pwd=b'39BX@MCPU')
-# b'CDDC2026{Thr33_cub3d_T1m35_Thr33_cub3_puzzl35!}\n'
+
 ```
 
 ---
