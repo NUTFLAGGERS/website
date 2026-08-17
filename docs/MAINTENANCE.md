@@ -66,15 +66,24 @@ All editable content lives in **`src/content/`**:
 ```
 src/content/
 ├── team/        → Team member profiles (.json)
-├── writeups/    → CTF writeup blog posts (.md)
-├── events/      → CTF competition entries (.md)
-├── resources/   → Curated tools & learning links (.md)
-└── projects/    → Open-source projects (.md)
+├── writeups/    → CTF writeup blog posts (<slug>/index.md)
+├── events/      → CTF competition entries (<slug>/index.md)
+├── resources/   → Curated tools & learning links (<slug>/index.md)
+└── projects/    → Open-source projects (<slug>/index.md)
 ```
 
-Each file has a **frontmatter block** at the top (between `---` markers) containing structured metadata. Below the frontmatter is optional freeform Markdown body text.
+### Directory-Based Content Format
+All Markdown content collections (`writeups/`, `events/`, `projects/`, `resources/`) use a **directory-based structure** (`<slug>/index.md`). This makes co-locating images, screenshots, attachments, and supporting files simple:
+```
+src/content/events/2026-08-18-start_2_sch/
+├── index.md        ← Main event content and frontmatter
+└── poster.png      ← Co-located image asset
+```
 
-**The schema for every collection is enforced** in [`src/content/config.ts`](./../src/content/config.ts). If you add a field not in the schema, it's silently ignored. If you omit a required field, the build fails.
+### Key Conventions
+- **Drafts:** Add `draft: true` to the frontmatter of any entry to hide it from the website without deleting the file.
+- **Empty Sections:** Any section on the homepage or collection pages with 0 items will display `"More content coming soon!"`.
+- **Frontmatter Validation:** Each entry has a **frontmatter block** at the top (between `---` markers) containing structured metadata. The schema for every collection is strictly enforced in [`src/content/config.ts`](./../src/content/config.ts). If you omit a required field, the build fails.
 
 ---
 
@@ -150,8 +159,8 @@ Rename the files. The number prefix controls order — `1-member.json` appears b
 ## 5. Posting Writeups
 
 **Location:** `src/content/writeups/`  
-**File format:** `.md` (Markdown)  
-**Naming convention:** `<slug>.md` — the filename becomes the URL. E.g. `heap_overflow_pwn.md` → `/writeups/heap_overflow_pwn/`
+**File format:** `<slug>/index.md`  
+**Naming convention:** Create a folder named `<slug>` containing `index.md`. The folder name becomes the URL slug. E.g. `src/content/writeups/heap_overflow_pwn/index.md` → `/writeups/heap_overflow_pwn/`
 
 ### Minimal Writeup
 
@@ -176,6 +185,7 @@ event: "PwnCTF 2026"
 author: "handle"
 description: "Exploiting a heap overflow in a custom allocator to achieve RCE."
 score: "500 pts"
+draft: false
 tags: ["pwn", "rev"]
 ---
 
@@ -201,6 +211,7 @@ exploit_payload = b"A" * 64
 | `author` | ❌ | string | Author handle |
 | `description` | ❌ | string | Short summary shown in listings |
 | `score` | ❌ | string | Points value, e.g. `"500 pts"` |
+| `draft` | ❌ | boolean | Set to `true` to hide writeup from website without deleting it |
 | `tags` | ❌ | string[] | Categories — see [Tag Reference](#9-tag-reference) |
 
 ### Markdown Features Available
@@ -209,18 +220,19 @@ exploit_payload = b"A" * 64
 - **Fenced code blocks** with syntax highlighting (powered by Shiki, `github-dark-dimmed` theme)
 - Block quotes (`> ...`)
 - Tables
+- Co-located images (place images inside `src/content/writeups/<slug>/` and reference as `![alt](./image.png)`)
 
 ### Linking a Writeup to an Event
 
-To make a writeup clickable from an event entry, set the `writeupSlug` in the **event file's** challenges list to match the writeup's filename (without `.md`):
+To make a writeup clickable from an event entry, set the `writeupSlug` in the **event file's** challenges list to match the writeup's folder name:
 
 ```yaml
-# In src/content/events/pwnctf_2026.md
+# In src/content/events/pwnctf_2026/index.md
 challenges:
   - name: "Heap Overflow"
     category: "pwn"
     points: "500 pts"
-    writeupSlug: "heap_overflow_pwn"   # ← matches heap_overflow_pwn.md
+    writeupSlug: "heap_overflow_pwn"   # ← matches src/content/writeups/heap_overflow_pwn/
 ```
 
 ### Homepage Display
@@ -232,8 +244,8 @@ The **3 most recent writeups** (by `pubDate`) appear on the homepage. All writeu
 ## 6. Managing Events (CTFs)
 
 **Location:** `src/content/events/`  
-**File format:** `.md`  
-**Naming convention:** `<ctf_name>_<year>.md` (use underscores, no spaces)
+**File format:** `<slug>/index.md`  
+**Naming convention:** Create a folder named `<slug>` containing `index.md`. The folder name becomes the URL slug. E.g. `src/content/events/2026-08-18-start_2_sch/index.md` → `/events/2026-08-18-start_2_sch/`
 
 ### Upcoming CTF (no results yet)
 
@@ -245,6 +257,7 @@ startDate: "2026-10-01"
 location: "Online / International"
 description: "Upcoming competition"
 featured: true
+draft: false
 tags: ["web", "pwn", "crypto"]
 challenges: []
 ---
@@ -264,6 +277,7 @@ description: "1st place · 5000 pts"
 featured: true
 score: "5000 pts"
 place: "1st place"
+draft: false
 tags: ["web", "pwn", "crypto", "rev"]
 challenges:
   - name: "Challenge One"
@@ -288,6 +302,7 @@ Brief post-competition notes.
 | `location` | ❌ | string | E.g. `"Online"`, `"Singapore"` |
 | `description` | ❌ | string | Short summary shown in the listing |
 | `featured` | ❌ | boolean | `true` → appears in "featured events" on homepage |
+| `draft` | ❌ | boolean | Set to `true` to hide event from website without deleting it |
 | `score` | ❌ | string | Team total score |
 | `place` | ❌ | string | Team placement |
 | `tags` | ❌ | string[] | Challenge categories present in this CTF |
@@ -309,6 +324,7 @@ challenges:
 
 ### How Events Appear on the Site
 
+- **Event Detail Pages:** Each event gets its own dedicated page at `/events/<slug>/` rendering metadata, official external links, challenge tables, and body Markdown content.
 - **Upcoming events** (date ≥ `2026-08-01`) → sorted soonest-first on the homepage
 - **Featured events** (`featured: true`) → sorted newest-first on the homepage  
 - **All events** → `/events/` page (sorted descending by date)
@@ -321,8 +337,8 @@ challenges:
 ## 7. Adding Resources
 
 **Location:** `src/content/resources/`  
-**File format:** `.md`  
-**Naming convention:** `<resource-name>.md` (use hyphens)
+**File format:** `<slug>/index.md`  
+**Naming convention:** Create a folder named `<slug>` containing `index.md` (e.g. `src/content/resources/cryptohack/index.md`)
 
 ### Resource Entry
 
@@ -334,6 +350,7 @@ description: "One sentence description of what this resource is."
 url: "https://resource-url.com"
 tags: ["web", "learning"]
 featured: false
+draft: false
 ---
 
 Optional longer description or notes about the resource.
@@ -349,6 +366,7 @@ Optional longer description or notes about the resource.
 | `url` | ✅ | string | External URL for the resource |
 | `tags` | ❌ | string[] | Additional category tags |
 | `featured` | ❌ | boolean | `true` → appears on homepage (up to 3 featured shown) |
+| `draft` | ❌ | boolean | Set to `true` to hide resource from website without deleting it |
 
 ### Common Categories
 
@@ -370,8 +388,8 @@ Up to **3 resources** with `featured: true` appear on the homepage. The full lis
 ## 8. Managing Projects
 
 **Location:** `src/content/projects/`  
-**File format:** `.md`  
-**Naming convention:** `<project-name>.md`
+**File format:** `<slug>/index.md`  
+**Naming convention:** Create a folder named `<slug>` containing `index.md` (e.g. `src/content/projects/example_project/index.md`)
 
 ### Project Entry
 
@@ -382,6 +400,7 @@ date: "2026-08-01"
 tag: "tool"
 description: "One sentence description of the project."
 featured: true
+draft: false
 githubUrl: "https://github.com/NUTFLAGGERS/<repo-name>"
 url: "https://<live-url>.com"
 ---
@@ -398,6 +417,7 @@ Optional longer project description or usage notes.
 | `tag` | ✅ | string | Single tag/category label |
 | `description` | ✅ | string | Short description shown in listings |
 | `featured` | ❌ | boolean | `true` → appears in "featured projects" on homepage |
+| `draft` | ❌ | boolean | Set to `true` to hide project from website without deleting it |
 | `githubUrl` | ❌ | string | GitHub repo URL (preferred) |
 | `url` | ❌ | string | Fallback URL if no GitHub |
 
@@ -570,16 +590,18 @@ website/
 │   │   ├── team/                 ← Team member profiles (.json)
 │   │   │   ├── 1-oliver.json
 │   │   │   └── ...
-│   │   ├── writeups/             ← CTF writeup posts (.md)
-│   │   │   └── example_post.md
-│   │   ├── events/               ← CTF competition entries (.md)
-│   │   │   ├── example_ctf.md
-│   │   │   └── example_upcoming_ctf.md
-│   │   ├── resources/            ← Curated tools & links (.md)
-│   │   │   ├── cryptohack.md
-│   │   │   └── ...
-│   │   └── projects/             ← Open-source projects (.md)
-│   │       └── example_project.md
+│   │   ├── writeups/             ← CTF writeup posts (<slug>/index.md)
+│   │   │   └── example_post/
+│   │   │       └── index.md
+│   │   ├── events/               ← CTF competition entries (<slug>/index.md)
+│   │   │   └── 2026-08-18-start_2_sch/
+│   │   │       └── index.md
+│   │   ├── resources/            ← Curated tools & links (<slug>/index.md)
+│   │   │   └── cryptohack/
+│   │   │       └── index.md
+│   │   └── projects/             ← Open-source projects (<slug>/index.md)
+│   │       └── example_project/
+│   │           └── index.md
 │   │
 │   ├── components/               ← Reusable UI components (rarely need to edit)
 │   │   ├── BaseHead.astro        ← SEO meta tags
@@ -596,7 +618,9 @@ website/
 │   ├── pages/                    ← Page routes (rarely need to edit)
 │   │   ├── index.astro           ← Homepage
 │   │   ├── about.astro           ← /about/
-│   │   ├── events.astro          ← /events/
+│   │   ├── events.astro          ← /events/ listing
+│   │   ├── events/
+│   │   │   └── [...slug].astro   ← /events/<slug>/ individual event page
 │   │   ├── resources.astro       ← /resources/
 │   │   ├── projects.astro        ← /projects/
 │   │   ├── 404.astro             ← 404 page
