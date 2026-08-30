@@ -340,6 +340,59 @@ footer a:hover {
   display: none !important;
 }
 
+/* CTF group filtering */
+.ctf-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.ctf-filter-btn {
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--dim);
+  background: transparent;
+  border: 1px solid #333;
+  border-radius: 2px;
+  padding: 2px 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.ctf-filter-btn:hover {
+  color: var(--fg);
+  border-color: var(--dim);
+}
+
+.ctf-filter-btn.active {
+  color: var(--link);
+  border-color: var(--link);
+  background: #7ec8a00a;
+}
+
+.ctf-group {
+  margin-bottom: 32px;
+}
+
+.ctf-group.hidden {
+  display: none !important;
+}
+
+.ctf-group-header {
+  color: var(--dim);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+  padding-top: 8px;
+}
+
+.ctf-count {
+  color: var(--dim);
+  font-size: 11px;
+}
+
 /* Cursor blinking animation */
 .cursor {
   display: inline-block;

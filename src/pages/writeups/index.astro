@@ -7,40 +7,103 @@ const writeups = await getCollection('writeups', ({ data }) => !data.draft);
 writeups.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 const baseUrl = import.meta.env.BASE_URL;
 const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+
+// Group writeups by CTF event
+const grouped = new Map<string, typeof writeups>();
+for (const w of writeups) {
+  const ctf = w.data.event || 'Other';
+  if (!grouped.has(ctf)) grouped.set(ctf, []);
+  grouped.get(ctf)!.push(w);
+}
+
+// Sort groups by most recent writeup date (newest first)
+const sortedGroups = [...grouped.entries()].sort((a, b) => {
+  const latestA = new Date(a[1][0].data.pubDate).getTime();
+  const latestB = new Date(b[1][0].data.pubDate).getTime();
+  return latestB - latestA;
+});
 ---
 
 <BaseLayout title="CTF Writeups — NUTFLAGGERS" description="Detailed cybersecurity CTF writeups, challenge solutions, and exploit walkthroughs.">
   <section id="writeups">
     <div class="section-title">── ctf writeups</div>
-    {writeups.length > 0 ? (
-      writeups.map((w) => {
-        const metaParts: string[] = [];
-        if (w.data.event) metaParts.push(w.data.event);
-        if (w.data.author) metaParts.push(`by ${w.data.author}`);
-        if (w.data.score) metaParts.push(w.data.score);
-        const metaText = metaParts.join(' · ');
 
-        const searchTerms = [
-          w.data.title,
-          w.data.event || '',
-          w.data.author || '',
-          (w.data.tags || []).join(' '),
-          w.data.description || '',
-        ].join(' ');
+    <div class="ctf-filters" role="group" aria-label="Filter by CTF">
+      <button class="ctf-filter-btn active" data-filter="all" type="button">all ({writeups.length})</button>
+      {sortedGroups.map(([ctf, items]) => (
+        <button class="ctf-filter-btn" data-filter={ctf} type="button">
+          {ctf} ({items.length})
+        </button>
+      ))}
+    </div>
 
-        return (
-          <Row
-            date={w.data.pubDate}
-            title={w.data.title}
-            url={`${base}writeups/${w.slug}/`}
-            meta={metaText}
-            tags={w.data.tags}
-            searchKeywords={searchTerms}
-          />
-        );
-      })
+    {sortedGroups.length > 0 ? (
+      sortedGroups.map(([ctf, items]) => (
+        <div class="ctf-group" data-ctf={ctf}>
+          <div class="ctf-group-header">── {ctf} <span class="ctf-count">[{items.length}]</span></div>
+          {items.map((w) => {
+            const metaParts: string[] = [];
+            if (w.data.author) metaParts.push(`by ${w.data.author}`);
+            if (w.data.score) metaParts.push(w.data.score);
+            const metaText = metaParts.join(' · ');
+
+            const searchTerms = [
+              w.data.title,
+              w.data.event || '',
+              w.data.author || '',
+              (w.data.tags || []).join(' '),
+              w.data.description || '',
+            ].join(' ');
+
+            return (
+              <Row
+                date={w.data.pubDate}
+                title={w.data.title}
+                url={`${base}writeups/${w.slug}/`}
+                meta={metaText}
+                tags={w.data.tags}
+                searchKeywords={searchTerms}
+              />
+            );
+          })}
+        </div>
+      ))
     ) : (
       <p class="empty-msg">More content coming soon!</p>
     )}
   </section>
 </BaseLayout>
+
+<script>
+  function setupCtfFilters() {
+    const buttons = document.querySelectorAll('.ctf-filter-btn');
+    const groups = document.querySelectorAll('.ctf-group');
+    if (!buttons.length || !groups.length) return;
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = (btn as HTMLElement).dataset.filter;
+
+        buttons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        groups.forEach((g) => {
+          const group = g as HTMLElement;
+          if (filter === 'all' || group.dataset.ctf === filter) {
+            group.classList.remove('hidden');
+          } else {
+            group.classList.add('hidden');
+          }
+        });
+
+        const searchInput = document.getElementById('searchInput') as HTMLInputElement | null;
+        if (searchInput) {
+          searchInput.dispatchEvent(new Event('input'));
+        }
+      });
+    });
+  }
+
+  setupCtfFilters();
+  document.addEventListener('astro:page-load', setupCtfFilters);
+</script>
