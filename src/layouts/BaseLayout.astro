@@ -1,9 +1,13 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
+import SignupBanner from '../components/SignupBanner.astro';
 import SearchPrompt from '../components/SearchPrompt.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import '../styles/components.css';
+import '../styles/writeups.css';
+import '../styles/banner.css';
 
 export interface Props {
   title?: string;
@@ -19,6 +23,7 @@ const { title, description } = Astro.props;
     <BaseHead title={title} description={description} />
   </head>
   <body>
+    <SignupBanner />
     <SearchPrompt />
     <Header />
     <main>

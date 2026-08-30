@@ -1,0 +1,34 @@
+---
+---
+
+<div class="signup-banner" id="signup-banner">
+  <div class="signup-content">
+    <span class="signup-text">interested in joining nutflaggers?</span>
+    <div class="signup-links">
+      <a href="https://forms.cloud.microsoft/r/LZ669F6Wvi" target="_blank" rel="noopener noreferrer" class="signup-btn signup-btn-primary">sign up now ↗</a>
+      <a href="https://forms.cloud.microsoft/r/bPRU7yN0pY" target="_blank" rel="noopener noreferrer" class="signup-btn signup-btn-secondary">interest session · 4 Sep 2026, 7 pm ↗</a>
+    </div>
+  </div>
+  <button class="signup-dismiss" type="button" aria-label="Dismiss banner" id="dismiss-banner">&times;</button>
+</div>
+
+<script>
+  function setupBanner() {
+    const banner = document.getElementById('signup-banner');
+    const dismiss = document.getElementById('dismiss-banner');
+    if (!banner || !dismiss) return;
+
+    if (sessionStorage.getItem('signup-banner-dismissed')) {
+      banner.style.display = 'none';
+      return;
+    }
+
+    dismiss.addEventListener('click', () => {
+      banner.style.display = 'none';
+      sessionStorage.setItem('signup-banner-dismissed', '1');
+    });
+  }
+
+  setupBanner();
+  document.addEventListener('astro:page-load', setupBanner);
+</script>
