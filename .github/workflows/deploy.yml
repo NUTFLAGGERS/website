@@ -33,6 +33,11 @@ jobs:
       - name: Build Astro Site
         run: npm run build
 
+      - name: Encrypt Protected Pages
+        run: npm run encrypt
+        env:
+          SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
