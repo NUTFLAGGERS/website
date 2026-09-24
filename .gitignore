@@ -9,6 +9,8 @@ node_modules/
 .env
 .env.production
 .env.local
+*.key
+git-crypt-key*
 
 # OS & Editor clutter
 .DS_Store

@@ -496,17 +496,30 @@ The [`.github/CODEOWNERS`](./../.github/CODEOWNERS) file enforces that certain f
 - `src/components/`, `src/layouts/`, `src/styles/` → infra-team
 - `src/content/writeups/` → infra-team
 
-Content-only changes (events, team, resources, projects) do **not** require a CODEOWNERS review, but still go through the deployment reviewer gate.
+### Security & Writeup Encryption
 
-### Manual Build & Preview (Local)
+The website uses a **two-tier encryption architecture** to ensure writeups and challenge solutions remain confidential:
 
-```bash
-npm run build          # builds to ./dist
-npx astro preview      # serves dist/ locally for final check
-```
+1. **Repository-Level Encryption (`git-crypt`):**
+   - Files matching `src/content/writeups/**` in `.gitattributes` are encrypted before being pushed to GitHub.
+   - On GitHub.com, files appear as encrypted binary blobs (`.GITCRYPT.`), preventing unauthenticated visitors from reading solutions directly from the source repository.
+   - **For Team Members (Unlocking Locally):**
+     ```bash
+     # Install git-crypt
+     brew install git-crypt   # macOS
+     sudo apt install git-crypt # Linux
 
-> [!IMPORTANT]
-> The live site URL is `https://nutflaggers.github.io/website/`. Note the `/website/` subpath — this is configured in `astro.config.mjs` and handled automatically. Do not hardcode absolute paths in content files.
+     # Unlock repository with team key
+     git-crypt unlock /path/to/git-crypt.key
+     ```
+   - **For GitHub Actions CI/CD:**
+     - The base64-encoded key is stored in GitHub repository secrets as `GIT_CRYPT_KEY`.
+     - During the build job, GitHub Actions automatically unlocks `git-crypt` so Astro can compile Markdown into HTML.
+
+2. **Published Static Site Encryption (AES-256-GCM + PBKDF2):**
+   - After Astro compiles the HTML into `dist/`, the post-build script [`scripts/encrypt-pages.mjs`](./../scripts/encrypt-pages.mjs) encrypts the `<main>` content of all writeups and resources.
+   - On the live site, visitors are presented with a terminal gate prompt (`~/0xflag $ enter password`).
+   - The password is configured via the `SITE_PASSWORD` repository secret.
 
 ---
 

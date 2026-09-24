@@ -30,6 +30,22 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Install git-crypt
+        run: sudo apt-get update && sudo apt-get install -y git-crypt
+
+      - name: Unlock git-crypt
+        env:
+          GIT_CRYPT_KEY: ${{ secrets.GIT_CRYPT_KEY }}
+        run: |
+          if [ -n "$GIT_CRYPT_KEY" ]; then
+            echo "$GIT_CRYPT_KEY" | base64 -d > ./git-crypt-key
+            git-crypt unlock ./git-crypt-key
+            rm -f ./git-crypt-key
+            echo "git-crypt unlocked successfully."
+          else
+            echo "::warning::GIT_CRYPT_KEY secret is not set in repository settings! Build may fail if content is encrypted."
+          fi
+
       - name: Build Astro Site
         run: npm run build
 
