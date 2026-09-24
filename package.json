@@ -7,6 +7,7 @@
     "start": "astro dev",
     "build": "astro build",
     "encrypt": "node scripts/encrypt-pages.mjs",
+    "unlock": "git-crypt unlock",
     "preview": "astro preview",
     "new-writeup": "node scripts/new-writeup.js",
     "astro": "astro"
