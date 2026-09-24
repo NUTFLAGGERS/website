@@ -8,7 +8,7 @@ score: "1250"
 description: |
   > Recover the clearance from the archived spool.
   > The capture is raw printer output. Anything that rewrites it as text, fixes its line endings or renders it will destroy part of the evidence and will not tell you it has.
-tags: ["forensics"]
+tags: ["forensics", "printer"]
 ---
 
 - **Challenge:** SQ_NOTICE09
