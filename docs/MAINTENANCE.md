@@ -501,8 +501,8 @@ The [`.github/CODEOWNERS`](./../.github/CODEOWNERS) file enforces that certain f
 The website uses a **two-tier encryption architecture** to ensure writeups and challenge solutions remain confidential:
 
 1. **Repository-Level Encryption (`git-crypt`):**
-   - Files matching `src/content/writeups/**` in `.gitattributes` are encrypted before being pushed to GitHub.
-   - On GitHub.com, files appear as encrypted binary blobs (`.GITCRYPT.`), preventing unauthenticated visitors from reading solutions directly from the source repository.
+   - Files matching `src/content/writeups/**` and `src/content/resources/**` in `.gitattributes` are encrypted before being pushed to GitHub.
+   - On GitHub.com, files appear as encrypted binary blobs (`.GITCRYPT.`), preventing unauthenticated visitors from reading writeups and curated resources directly from the source repository.
    - **For Team Members (Unlocking Locally):**
      ```bash
      # Install git-crypt

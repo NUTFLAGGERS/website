@@ -1,3 +1,6 @@
 # git-crypt encryption configuration
 # Encrypt all writeups and their associated files/attachments
 src/content/writeups/** filter=git-crypt diff=git-crypt
+
+# Encrypt curated resources
+src/content/resources/** filter=git-crypt diff=git-crypt
