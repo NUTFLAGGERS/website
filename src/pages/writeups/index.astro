@@ -59,7 +59,7 @@ const sortedGroups = [...grouped.entries()].sort((a, b) => {
               <Row
                 date={w.data.pubDate}
                 title={w.data.title}
-                url={`${base}writeups/${w.slug}/`}
+                url={`${base}writeups/${w.id}/`}
                 meta={metaText}
                 tags={w.data.tags}
                 searchKeywords={searchTerms}

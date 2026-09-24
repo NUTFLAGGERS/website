@@ -72,7 +72,7 @@ const featuredResources = resources.filter((r) => r.data.featured).slice(0, 3);
           (event.data.challenges || []).map((c) => c.name).join(' '),
         ].join(' ');
 
-        const eventUrl = `${base}events/${event.slug}/`;
+        const eventUrl = `${base}events/${event.id}/`;
 
         return (
           <Row
@@ -113,7 +113,7 @@ const featuredResources = resources.filter((r) => r.data.featured).slice(0, 3);
           (event.data.challenges || []).map((c) => c.name).join(' '),
         ].join(' ');
 
-        const eventUrl = `${base}events/${event.slug}/`;
+        const eventUrl = `${base}events/${event.id}/`;
 
         return (
           <Row
@@ -159,7 +159,7 @@ const featuredResources = resources.filter((r) => r.data.featured).slice(0, 3);
           <Row
             date={w.data.pubDate}
             title={w.data.title}
-            url={`${base}writeups/${w.slug}/`}
+            url={`${base}writeups/${w.id}/`}
             meta={metaText}
             tags={w.data.tags}
             searchKeywords={searchTerms}

@@ -83,7 +83,7 @@ src/content/events/2026-08-18-start_2_sch/
 ### Key Conventions
 - **Drafts:** Add `draft: true` to the frontmatter of any entry to hide it from the website without deleting the file.
 - **Empty Sections:** Any section on the homepage or collection pages with 0 items will display `"More content coming soon!"`.
-- **Frontmatter Validation:** Each entry has a **frontmatter block** at the top (between `---` markers) containing structured metadata. The schema for every collection is strictly enforced in [`src/content/config.ts`](./../src/content/config.ts). If you omit a required field, the build fails.
+- **Frontmatter Validation:** Each entry has a **frontmatter block** at the top (between `---` markers) containing structured metadata. The schema for every collection is strictly enforced in [`src/content.config.ts`](./../src/content.config.ts). If you omit a required field, the build fails.
 
 ---
 
