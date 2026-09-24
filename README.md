@@ -9,7 +9,7 @@ Static site for NUTFLAGGERS CTF team built with [Astro](https://astro.build) (SS
 ### 1. Prerequisites
 
 Ensure you have the following installed on your system:
-- **Node.js** (v18.0.0 or higher, v20 recommended)
+- **Node.js** (v22.12.0 or higher)
 - **npm** (v9.0.0 or higher)
 
 Verify your Node.js installation:
