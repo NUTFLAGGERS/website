@@ -59,7 +59,7 @@ We observe that each of the unicode characters stands for a different arithmetic
 
 Since it's Python, we look at the next couple lines to see what they do
 
-```Python
+```python
 if (len(guess) < len(ὁ)):
     print("That's too short :(")
     exit()
@@ -68,7 +68,7 @@ if (len(guess) < len(ὁ)):
 
 We can see that this is just a check for how long the guessed string is (which is 27 characters)
 
-```Python
+```python
 for ö in range(len(ὁ)-1):
 for i in range(len(targets) - 1): // In human readable format
 
@@ -76,7 +76,7 @@ for i in range(len(targets) - 1): // In human readable format
 
 I did not know any unicode character could be a loop counter but the more you know ig
 
-```Python
+```python
     ό = ord(guess[ö])
     ὃ = ord(guess[ö+1])
 
@@ -90,7 +90,7 @@ This returns the unicode character number of two consecutive numbers in `guess`
 
 ## Step 3
 
-```Python
+```python
     if (о(ὄ(ό,ὃ),ὂ(ό,ὃ)) != ὁ[ơ(ö,ȯ(օ(ό,ὃ),ό))]):
 
 ```
@@ -107,7 +107,7 @@ This is the complicated portion. We need to simplify this expression to figure o
 
 Hence:
 
-```Python
+```python
 о(ὄ(ό,ὃ), ὂ(ό,ὃ)) = о(ό, ὃ)
                   = ό + ὃ
                   = ord(guess[ö]) + ord(guess[ö+1])
@@ -129,7 +129,7 @@ We solve the inner section first:
 
 Hence:
 
-```Python
+```python
 օ(ό,ὃ) = ό * ὃ
 ȯ(օ(ό,ὃ), ό) = ȯ(ό*ὃ, ό)
              = (ό * ὃ) % ό
@@ -140,7 +140,7 @@ We observe that (a * b) % a is 0 (unless a =/= 0), so `ȯ(օ(ό,ὃ), ό) = 0`
 
 Solving the outermost function:
 
-```Python
+```python
 ơ(ö, ȯ(օ(ό,ὃ), ό)) = ơ(ö, 0)
                    = ö
 
@@ -148,7 +148,7 @@ Solving the outermost function:
 
 Translating the entire snippet into something human readable:
 
-```Python
+```python
 if add(first(curr, nxt), second(curr, nxt)) != targets[xor(i, mod(mul(curr, nxt), curr))]:
 
 if (curr + nxt) != targets[i]: // Simplified further
